@@ -5,12 +5,13 @@ import { Link } from 'react-router-dom';
 const AdminSideBar = () => {
   const navItems = [
     { icon: <Gauge className="mr-3" />, label: 'Dashboard', href: '', active: true },
-    { icon: <StickyNote className="mr-3" />, label: 'Blank Page', href: 'blank' },
-    { icon: <Table className="mr-3" />, label: 'Tables', href: 'table' },
-    { icon: <AlignLeft className="mr-3" />, label: 'Forms', href: 'form' },
-    { icon: <Tablet className="mr-3" />, label: 'Tabbed Content', href: 'tab' },
-    { icon: <Calendar className="mr-3" />, label: 'Calendar', href: 'calendar' },
-    { icon: <Trophy className='mr-3' />, label: 'Contest', href: 'contest'}
+    // { icon: <StickyNote className="mr-3" />, label: 'Blank Page', href: 'blank' },
+    // { icon: <Table className="mr-3" />, label: 'Tables', href: 'table' },
+    // { icon: <AlignLeft className="mr-3" />, label: 'Forms', href: 'form' },
+    // { icon: <Tablet className="mr-3" />, label: 'Tabbed Content', href: 'tab' },
+    // { icon: <Calendar className="mr-3" />, label: 'Calendar', href: 'calendar' },
+    { icon: <Trophy className='mr-3' />, label: 'Contest', href: 'contest'},
+    { icon: <AlignLeft className="mr-3" />, label: 'Problem', href: 'problem' },
   ];
 
   return (

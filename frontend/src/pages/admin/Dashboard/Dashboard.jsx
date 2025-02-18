@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Check, List } from 'lucide-react';
+import { Plus, Check, List, Trophy, AlignLeft, CheckCircle } from 'lucide-react';
 import AdminSideBar from '../../../components/AdminSideBar';
 
 const Dashboard = () => {
@@ -15,23 +15,33 @@ const Dashboard = () => {
         <h1 className="text-3xl text-black pb-6">Dashboard</h1>
 
         <div className="flex flex-wrap mt-6">
-            <div className="w-full lg:w-1/2 pr-0 lg:pr-2">
-            <p className="text-xl pb-3 flex items-center">
-                <Plus className="mr-3" /> Monthly Reports
-            </p>
-            <div className="p-6 bg-white">
-                {/* Chart placeholder */}
-                <div className="w-full h-48 bg-gray-200 rounded"></div>
+            <div className="w-full lg:w-1/2 pr-0 lg:pr-2 pb-2">
+                <div className='border-spacing-8 border-yellow-300 text-3xl border-l-8 bg-white flex flex-row justify-between px-2 py-4 rounded-lg mx-4 shadow-sm'>
+                    <div className='flex flex-row gap-4 items-center text-yellow-300'><Trophy color='yellow' /> Contest</div>
+                    <div className='text-yellow-300'>10</div>
+                </div>
             </div>
+            <div className="w-full lg:w-1/2 pr-0 lg:pr-2 pb-2">
+                <div className='border-spacing-8 border-blue-500 text-3xl border-l-8 bg-white flex flex-row justify-between px-2 py-4 rounded-lg mx-4 shadow-sm'>
+                    <div className='flex flex-row gap-4 items-center text-blue-400'><List color='blue' /> Problem</div>
+                    <div className='text-blue-400'>10</div>
+                </div>
             </div>
-            <div className="w-full lg:w-1/2 pl-0 lg:pl-2 mt-12 lg:mt-0">
-            <p className="text-xl pb-3 flex items-center">
-                <Check className="mr-3" /> Resolved Reports
-            </p>
-            <div className="p-6 bg-white">
-                {/* Chart placeholder */}
-                <div className="w-full h-48 bg-gray-200 rounded"></div>
+            <div className="w-full lg:w-1/2 pr-0 lg:pr-2 pb-2">
+                <div className="border-spacing-8 border-gray-500 text-3xl border-l-8 bg-white flex flex-row justify-between px-2 py-4 rounded-lg mx-4 shadow-sm">
+                    <div className="flex flex-row gap-4 items-center text-gray-500">
+                        <AlignLeft color="gray" /> Total submissions
+                    </div>
+                    <div className="text-gray-500">10</div>
+                </div>
             </div>
+            <div className="w-full lg:w-1/2 pr-0 lg:pr-2 pb-2">
+                <div className="border-spacing-8 border-green-500 text-3xl border-l-8 bg-white flex flex-row justify-between px-2 py-4 rounded-lg mx-4 shadow-sm">
+                    <div className="flex flex-row gap-4 items-center text-green-500">
+                        <CheckCircle color="green" /> Success submissions
+                    </div>
+                    <div className="text-green-500">10</div>
+                </div>
             </div>
         </div>
 

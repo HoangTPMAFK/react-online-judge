@@ -4,7 +4,7 @@ function AdminMobileMenu() {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <header className="w-full bg-sidebar py-5 px-6 sm:hidden">
+        <header className="w-full bg-sidebar py-5 px-6 sm:hidden bg-blue-500">
             <div className="flex items-center justify-between">
                 <a href="/admin/" className="text-white text-3xl font-semibold uppercase hover:text-gray-300">
                     Admin

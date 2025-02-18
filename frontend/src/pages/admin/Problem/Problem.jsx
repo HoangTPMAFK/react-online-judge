@@ -15,6 +15,23 @@ function Problem() {
         {
             name: "Point",
             selector: row => row.point
+        },
+        {
+            name: "Action",
+            selector: row => 
+        <div>
+            <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mr-2 rounded" 
+              onClick={() => {window.location.href = '/admin/problem/' + row.no}}>
+                View
+            </button>
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded" 
+              onClick={() => {window.location.href = '/admin/problem/' + row.no}}>
+                Edit
+            </button>
+            <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                Delete
+            </button>
+        </div>
         }
     ];
     const [data, setData] = useState([
@@ -83,10 +100,10 @@ function Problem() {
     }
     return(
     <main className="w-full flex-grow p-6">
-        <h1 className="text-3xl text-black font-medium pb-6">Contests</h1>
+        <h1 className="text-3xl text-black font-medium pb-6">Problems</h1>
         <div className="flex justify-between mb-4">
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Add Contest
+            Add Problem
           </button>
           <input ref={searchInput} onInput={() => handleSearch()} type="text" placeholder="Search" className="border border-gray-400 p-2 rounded w-60" />
         </div>

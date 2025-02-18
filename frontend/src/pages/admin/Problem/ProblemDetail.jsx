@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Submission from "./Submission";
 
 function ProblemDetail() {
     const [samples, setSamples] = useState([{ input: "", output: "" }]);
@@ -9,7 +10,7 @@ function ProblemDetail() {
 
     return (
         <main className="w-full flex-grow p-6">
-            <h1 className="text-3xl text-black font-medium pb-6">Contests</h1>
+            <h1 className="text-3xl text-black font-medium pb-6">Problem</h1>
             <div className="grid grid-cols-2 grid-rows-1 gap-4">
                 <div className="flex flex-row justify-between mb-4">
                     <div className="text-xl">Title</div>
@@ -67,6 +68,9 @@ function ProblemDetail() {
                 >
                     + Add Sample
                 </button>
+            </div>
+            <div className="mt-4">
+                <Submission />
             </div>
         </main>
     );

@@ -31,14 +31,18 @@ function Contest() {
     {
       name: 'Action',
       cell: row => 
-        <div>
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded" 
-            onClick={() => {window.location.href = '/admin/contest/' + row.no}}>
-            Edit
-          </button>
-          <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-            Delete
-          </button>
+        <div className="flex md:flex-row flex-col">
+            <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-3 mr-2 rounded" 
+              onClick={() => {window.location.href = '/admin/contest/' + row.no}}>
+                View
+            </button>
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 mr-2 rounded" 
+              onClick={() => {window.location.href = '/admin/contest/' + row.no}}>
+                Edit
+            </button>
+            <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-3 rounded">
+                Delete
+            </button>
         </div>
         ,
     },
