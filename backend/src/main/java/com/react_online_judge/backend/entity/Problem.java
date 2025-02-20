@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -20,13 +21,16 @@ public class Problem {
     String title;
     String statement;
     int point;
-    Boolean isPublic;
+    boolean isPublic;
     int timeLimit;
     int memoryLimit;
     String difficult;
     String input;
     String output;
     String sample_input_output; // JSON string
-    @OneToMany
-    Set<Submission> totalSubmissions;
+    String hidden_input_output; // JSON string
+    @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<Submission> submissions;
+    @ManyToMany(mappedBy = "problems")
+    Set<Contest> contests;
 }

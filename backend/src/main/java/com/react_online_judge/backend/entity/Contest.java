@@ -19,12 +19,23 @@ public class Contest {
     Long id;
     @Column(nullable = false, unique = true)
     String title;
+    Long creatorId;
     String password; // Null if public
     LocalDateTime startAt;
     LocalDateTime endAt;
     @ManyToMany
+    @JoinTable(
+            name = "contest_problem",
+            joinColumns = @JoinColumn(name = "contest_id"),
+            inverseJoinColumns = @JoinColumn(name = "problem_id")
+    )
     Set<Problem> problems;
     @ManyToMany
+    @JoinTable(
+            name = "contest_user",
+            joinColumns = @JoinColumn(name = "contest_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     Set<User> participatedUsers;
     String detail;
 }

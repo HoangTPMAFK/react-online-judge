@@ -21,13 +21,12 @@ public class User {
     String lname;
     String password;
     String email;
-    int solved;
-    int submission;
     int point;
-    @ManyToMany
-    Set<Problem> solvedProblems;
-    @ManyToMany
-    Set<Contest> participatingContests;
-    @ManyToMany
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<Submission> submissions;
+    @ManyToMany(mappedBy = "participatedUsers")
+    Set<Contest> participatedContests;
+    @ManyToMany(mappedBy = "users")
     Set<Role> roles;
+    String avatar;
 }

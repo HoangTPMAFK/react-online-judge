@@ -1,17 +1,18 @@
 package com.react_online_judge.backend.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+@Entity
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@JsonInclude
-public class APIResponse<T> {
-    int code = 100;
-    String message;
-    T data;
+public class PermissionResponse {
+    @Id
+    String name;
+    String description;
 }
