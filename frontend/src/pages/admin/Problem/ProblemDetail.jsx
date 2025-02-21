@@ -29,6 +29,14 @@ function ProblemDetail() {
                     <input type="number" className="w-60 pl-2 h-8" placeholder="In KBs" />
                 </div>
                 <div className="flex flex-row justify-between mb-4">
+                    <div className="text-xl">Points</div>
+                    <input type="number" className="w-60 pl-2 h-8" />
+                </div>
+                <div className="flex flex-row justify-between mb-4">
+                    <div className="text-xl">Public</div>
+                    <input type="checkbox" />
+                </div>
+                <div className="flex flex-row justify-between mb-4">
                     <div className="text-xl">Level</div>
                     <select className="w-44">
                         <option>Easy</option>
