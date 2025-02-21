@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 
 const SuperAdminSideBar = () => {
   const navItems = [
-    { icon: <Gauge className="mr-3" />, label: 'Dashboard', href: '' },
+    { icon: <Gauge className="mr-3" />, label: 'Dashboard', href: '/' },
     { icon: <Table className="mr-3" />, label: 'Tables', href: 'table' },
     { icon: <AlignLeft className="mr-3" />, label: 'Forms', href: 'form' },
     { icon: <Tablet className="mr-3" />, label: 'Tabbed Content', href: 'tab' },
