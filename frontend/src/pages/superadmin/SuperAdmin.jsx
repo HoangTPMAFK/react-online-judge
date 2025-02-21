@@ -13,6 +13,7 @@ import ProblemDetail from './Problem/ProblemDetail';
 import AdminMobileMenu from '../../components/AdminMobileMenu';
 import User from './User/User';
 import UserDetail from './User/UserDetail';
+import SuperAdminAccount from './Login/SuperAdminAccount';
 import { useState } from 'react';
 
 const SuperAdmin = () => {
@@ -45,11 +46,8 @@ const SuperAdmin = () => {
 
             {isDropdownOpen && (
               <div className="absolute right-0 mt-[60px] w-36 bg-white rounded-md shadow-lg py-2">
-                <a href="/" className="block px-4 py-2 text-gray-800 hover:bg-blue-600">
+                <a href="/superadmin/account" className="block px-4 py-2 text-gray-800 hover:bg-blue-600">
                   Account
-                </a>
-                <a href="/" className="block px-4 py-2 text-gray-800 hover:bg-blue-600">
-                  Support
                 </a>
                 <a href="/" className="block px-4 py-2 text-gray-800 hover:bg-blue-600">
                   Sign Out
@@ -73,6 +71,7 @@ const SuperAdmin = () => {
                 <Route path="/problem/1" element={<ProblemDetail />} />
                 <Route path="/User" element={<User />} />
                 <Route path="/User/1" element={<UserDetail />} />
+                <Route path="/account/" element={<SuperAdminAccount />} />
             </Routes>
 
             <footer className="w-full bg-white text-right p-4">

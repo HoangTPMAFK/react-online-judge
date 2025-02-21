@@ -159,7 +159,7 @@ function UserDetail() {
         </div>
         <div className="grid grid-cols-1 gap-4">
           <div>
-              <p className="text-xl font-semibold mb-2">Problems</p>
+              <p className="text-xl font-semibold mb-2">Sloved Problems</p>
               <DataTable 
                   className="px-4" 
                   customStyles={customStyles} 

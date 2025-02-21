@@ -11,6 +11,7 @@ import ContestDetail from './Contest/ContestDetail';
 import Problem from './Problem/Problem';
 import ProblemDetail from './Problem/ProblemDetail';
 import AdminMobileMenu from '../../components/AdminMobileMenu';
+import AdminAccount from './Login/AdminAccount';
 import { useState } from 'react';
 
 const Admin = () => {
@@ -43,11 +44,8 @@ const Admin = () => {
 
             {isDropdownOpen && (
               <div className="absolute right-0 mt-[60px] w-36 bg-white rounded-md shadow-lg py-2">
-                <a href="/" className="block px-4 py-2 text-gray-800 hover:bg-blue-600">
+                <a href="/admin/account/" className="block px-4 py-2 text-gray-800 hover:bg-blue-600">
                   Account
-                </a>
-                <a href="/" className="block px-4 py-2 text-gray-800 hover:bg-blue-600">
-                  Support
                 </a>
                 <a href="/" className="block px-4 py-2 text-gray-800 hover:bg-blue-600">
                   Sign Out
@@ -69,6 +67,7 @@ const Admin = () => {
                 <Route path="/contest/1" element={<ContestDetail />} />
                 <Route path="/problem/" element={<Problem />} />
                 <Route path="/problem/1" element={<ProblemDetail />} />
+                <Route path="/account/" element={<AdminAccount />} />
             </Routes>
 
             <footer className="w-full bg-white text-right p-4">

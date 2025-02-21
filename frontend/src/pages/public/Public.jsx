@@ -8,6 +8,7 @@ import Register from './Register/Register';
 import Login from './Login/Login';
 import ContestDetail from './Contest/ContestDetail';
 import User from './User/User';
+import Account from './Login/Account';
 
 function Public() {
   return (
@@ -68,6 +69,7 @@ function Public() {
             <Route path="register" element={<Register />} />
             <Route path="login" element={<Login />} />
             <Route path="user/1" element={<User />} />
+            <Route path="account" element={<Account />} />
           </Routes>
         </div>
       </div>
