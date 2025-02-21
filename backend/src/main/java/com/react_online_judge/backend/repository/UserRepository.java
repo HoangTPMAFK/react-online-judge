@@ -11,7 +11,9 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
     Optional<User> findByEmail(String email);
-    @Query("SELECT u FROM User u JOIN u.participatedContests c WHERE c.id = :contestId")
+    @Query("SELECT u FROM User u JOIN u.contestParticipators c WHERE c.id = :contestId")
     List<User> findByContestId(@Param("contestId") Long contestId);
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = :role")
+    List<User> findByRole(@Param("role") String role);
     void deleteById(Long id);
 }

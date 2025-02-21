@@ -7,7 +7,7 @@ import lombok.experimental.FieldDefaults;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProblemResponse {
-    Long id;
+    long id;
     String title;
     String statement;
     int point;

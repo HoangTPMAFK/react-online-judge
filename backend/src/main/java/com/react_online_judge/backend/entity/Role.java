@@ -23,6 +23,7 @@ public class Role {
             inverseJoinColumns = @JoinColumn(name = "role_name")
     )
     Set<User> users;
+
     @ManyToMany
     @JoinTable(
             name = "role_permission",

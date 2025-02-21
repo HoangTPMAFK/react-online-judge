@@ -16,7 +16,7 @@ import java.util.Set;
 public class Contest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    long id;
     @Column(nullable = false, unique = true)
     String title;
     Long creatorId;
@@ -30,12 +30,9 @@ public class Contest {
             inverseJoinColumns = @JoinColumn(name = "problem_id")
     )
     Set<Problem> problems;
-    @ManyToMany
-    @JoinTable(
-            name = "contest_user",
-            joinColumns = @JoinColumn(name = "contest_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    Set<User> participatedUsers;
+
+    @OneToMany(mappedBy = "contest_id")
+    Set<ContestParticipator> contestParticipators;
+
     String detail;
 }

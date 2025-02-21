@@ -26,23 +26,23 @@ public class ProblemService {
     ProblemRepository problemRepository;
     ContestRepository contestRepository;
     ProblemMapper problemMapper;
-    ProblemResponse getProblemById(Long id) {
+    public ProblemResponse getProblemById(Long id) {
         Problem problem = problemRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PROBLEM_NOT_EXISTED));
         return problemMapper.toProblemResponse(problem);
     }
-    ProblemResponse getProblemByName(String title) {
+    public ProblemResponse getProblemByName(String title) {
         Problem problem = problemRepository.findByTitle(title).orElseThrow(() -> new AppException(ErrorCode.PROBLEM_NOT_EXISTED));
         return problemMapper.toProblemResponse(problem);
     }
-    List<ProblemResponse> getAllProblems() {
+    public List<ProblemResponse> getAllProblems() {
         List<Problem> problems = problemRepository.findAll();
         return problemMapper.toProblemResponseList(problems);
     }
-    List<ProblemResponse> getProblemsByContest(Long contestId) {
+    public List<ProblemResponse> getProblemsByContest(Long contestId) {
         List<Problem> problems = problemRepository.findByContestId(contestId);
         return problemMapper.toProblemResponseList(problems);
     }
-    ProblemResponse createProblem(ProblemCreationRequest request) {
+    public ProblemResponse createProblem(ProblemCreationRequest request) {
         Problem problem = problemMapper.toProblem(request);
         try {
             problemRepository.save(problem);
@@ -51,7 +51,7 @@ public class ProblemService {
             throw new AppException(ErrorCode.PROBLEM_EXISTED);
         }
     }
-    ProblemResponse updateProblem(Long id, ProblemUpdateRequest request) {
+    public ProblemResponse updateProblem(Long id, ProblemUpdateRequest request) {
         Problem problem = problemRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PROBLEM_NOT_EXISTED));
         problemMapper.updateProblem(problem, request);
         try {
@@ -61,7 +61,7 @@ public class ProblemService {
             throw new AppException(ErrorCode.PROBLEM_EXISTED);
         }
     }
-    void deleteProblem(Long id) {
+    public void deleteProblem(Long id) {
         problemRepository.deleteById(id);
     }
 }

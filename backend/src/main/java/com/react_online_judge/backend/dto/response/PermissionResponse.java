@@ -5,7 +5,6 @@ import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Entity
 @Data
 @Builder
 @NoArgsConstructor
@@ -14,5 +13,6 @@ import lombok.experimental.FieldDefaults;
 public class PermissionResponse {
     @Id
     String name;
+
     String description;
 }

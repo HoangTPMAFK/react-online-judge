@@ -24,15 +24,15 @@ import java.util.List;
 public class PermissionService {
     PermissionRepository permissionRepository;
     PermissionMapper permissionMapper;
-    PermissionResponse getPermissionResponse(String name) {
+    public PermissionResponse getPermissionResponse(String name) {
         Permission permission = permissionRepository.findByName(name).orElseThrow(() -> new AppException(ErrorCode.PERMISSION_NOT_EXISTED));
         return permissionMapper.toPermissionResponse(permission);
     }
-    List<PermissionResponse> getPermissionResponses() {
+    public List<PermissionResponse> getAllPermissions() {
         List<Permission> permissions = permissionRepository.findAll();
         return permissionMapper.toPermissionResponseList(permissions);
     }
-    PermissionResponse createPermission(PermissionCreationRequest request) {
+    public PermissionResponse createPermission(PermissionCreationRequest request) {
         Permission permission = permissionMapper.toPermission(request);
         try {
             permissionRepository.save(permission);
@@ -41,7 +41,7 @@ public class PermissionService {
             throw new AppException(ErrorCode.PERMISSION_EXISTED);
         }
     }
-    PermissionResponse updatePermission(String name, PermissionUpdateRequest request) {
+    public PermissionResponse updatePermission(String name, PermissionUpdateRequest request) {
         Permission permission = permissionRepository.findByName(name).orElseThrow(() -> new AppException(ErrorCode.PERMISSION_NOT_EXISTED));
         permissionMapper.updatePermission(permission, request);
         try {
@@ -51,7 +51,11 @@ public class PermissionService {
             throw new AppException(ErrorCode.PERMISSION_EXISTED);
         }
     }
-    void deletePermission(String name) {
+    public void deletePermission(String name) {
         permissionRepository.deleteByName(name);
+    }
+    public  List<PermissionResponse> getPermissionsByRole(String role) {
+        List<Permission> permission = permissionRepository.findByRole(role);
+        return permissionMapper.toPermissionResponseList(permission);
     }
 }

@@ -15,13 +15,15 @@ import java.time.LocalDateTime;
 public class Submission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    long id;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     User user;
+
     @ManyToOne
     @JoinColumn(name = "problem_id", nullable = false)
     Problem problem;
+
     String sourceCode; // input is the source code, save in database is the source path with id.language in problem submission folder
     String result;
     LocalDateTime submitTime;

@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 public class PermissionCreationRequest {
     @NotBlank
     String name;
+
     @NotBlank
     String description;
 }

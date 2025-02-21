@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -16,9 +15,11 @@ import java.util.Set;
 public class Problem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    long id;
+
     @Column(nullable = false, unique = true)
     String title;
+
     String statement;
     int point;
     boolean isPublic;
@@ -31,6 +32,7 @@ public class Problem {
     String hidden_input_output; // JSON string
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Submission> submissions;
+
     @ManyToMany(mappedBy = "problems")
     Set<Contest> contests;
 }

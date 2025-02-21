@@ -36,6 +36,14 @@ public class UserService {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         return userMapper.toUserResponse(user);
     }
+    public List<UserResponse> getParticipators(Long contestId) {
+        List<User> users = userRepository.findByContestId(contestId);
+        return userMapper.toUserResponseList(users);
+    }
+    public List<UserResponse> getUsersByRole(String role) {
+        List<User> users = userRepository.findByRole(role);
+        return userMapper.toUserResponseList(users);
+    }
     public List<UserResponse> getAllUsers() {
         List<User> users = userRepository.findAll();
         return userMapper.toUserResponseList(users);

@@ -1,0 +1,15 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /contest-programing
+
+spring:
+  datasource:
+    url: "jdbc:mariadb://14.165.105.186:3306/contest-programing"
+    username: root
+    password: lenovothinkpadx230
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    

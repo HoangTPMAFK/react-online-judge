@@ -15,7 +15,8 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    long id;
+
     String username;
     String fname;
     String lname;
@@ -24,9 +25,12 @@ public class User {
     int point;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Submission> submissions;
-    @ManyToMany(mappedBy = "participatedUsers")
-    Set<Contest> participatedContests;
+
+    @OneToMany(mappedBy = "user_id")
+    Set<ContestParticipator> contestParticipators;
+
     @ManyToMany(mappedBy = "users")
     Set<Role> roles;
+
     String avatar;
 }

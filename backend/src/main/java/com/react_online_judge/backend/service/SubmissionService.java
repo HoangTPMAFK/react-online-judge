@@ -22,19 +22,19 @@ import java.util.List;
 public class SubmissionService {
     SubmissionRepository submissionRepository;
     SubmissionMapper submissionMapper;
-    SubmissionResponse getSubmissionById(Long id) {
+    public SubmissionResponse getSubmissionById(Long id) {
         Submission submission = submissionRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.SUBMISSION_NOT_EXISTED));
         return submissionMapper.toSubmissionResponse(submission);
     }
-    SubmissionResponse getSubmissionByUserIdAndProblemId(Long userId, Long problemId) {
+    public SubmissionResponse getSubmissionByUserIdAndProblemId(Long userId, Long problemId) {
         Submission submission = submissionRepository.findByUserIdAndProblemId(problemId, userId).orElseThrow(() -> new AppException(ErrorCode.SUBMISSION_NOT_EXISTED));
         return submissionMapper.toSubmissionResponse(submission);
     }
-    List<SubmissionResponse> getAllSubmissionsByProblemId(Long problemId) {
+    public List<SubmissionResponse> getAllSubmissionsByProblemId(Long problemId) {
         List<Submission> submission = submissionRepository.findByProblemId(problemId);
         return submissionMapper.toSubmissionResponseList(submission);
     }
-    SubmissionResponse createSubmission(SubmissionRequest request) {
+    public SubmissionResponse createSubmission(SubmissionRequest request) {
         Submission submission = submissionMapper.toSubmission(request);
         return submissionMapper.toSubmissionResponse(submissionRepository.save(submission));
     }

@@ -11,7 +11,7 @@ import java.util.Set;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ContestResponse {
-    Long id;
+    long id;
     String title;
     String password; // Null if public
     LocalDateTime startAt;
