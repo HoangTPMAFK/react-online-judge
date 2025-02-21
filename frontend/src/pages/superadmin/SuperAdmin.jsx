@@ -1,6 +1,6 @@
 import React from 'react';
 import { Plus, Check, List } from 'lucide-react';
-import AdminSideBar from '../../components/AdminSideBar';
+import SuperAdminSideBar from '../../components/SuperAdminSideBar';
 import Dashboard from './Dashboard/Dashboard';
 import Form from './Form/Form';
 import Table from './Table/Table';
@@ -11,9 +11,11 @@ import ContestDetail from './Contest/ContestDetail';
 import Problem from './Problem/Problem';
 import ProblemDetail from './Problem/ProblemDetail';
 import AdminMobileMenu from '../../components/AdminMobileMenu';
+import User from './User/User';
+import UserDetail from './User/UserDetail';
 import { useState } from 'react';
 
-const Admin = () => {
+const SuperAdmin = () => {
   const users = [
     { firstName: 'Lian', lastName: 'Smith', phone: '622322662', email: 'jonsmith@mail.com' },
     { firstName: 'Emma', lastName: 'Johnson', phone: '622322662', email: 'jonsmith@mail.com' },
@@ -25,7 +27,7 @@ const Admin = () => {
 
   return (
     <div className="flex bg-gray-100 font-['Karla']">
-      <AdminSideBar />
+      <SuperAdminSideBar />
       
       <div className="w-full flex flex-col h-screen overflow-y-hidden">
 
@@ -69,6 +71,8 @@ const Admin = () => {
                 <Route path="/contest/1" element={<ContestDetail />} />
                 <Route path="/problem/" element={<Problem />} />
                 <Route path="/problem/1" element={<ProblemDetail />} />
+                <Route path="/User" element={<User />} />
+                <Route path="/User/1" element={<UserDetail />} />
             </Routes>
 
             <footer className="w-full bg-white text-right p-4">
@@ -81,4 +85,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default SuperAdmin;
