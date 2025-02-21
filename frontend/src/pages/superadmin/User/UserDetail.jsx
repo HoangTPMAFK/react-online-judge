@@ -96,7 +96,7 @@ function UserDetail() {
           </div>
           <div className="flex flex-row justify-between mb-4">
             <div className="text-xl">Email:</div>
-            <div className="w-60 pl-2 h-8">${}</div>
+            <div className="w-60 pl-2 h-8">Ducvt@example.com</div>
           </div>
         </div>
         {/* <div>
