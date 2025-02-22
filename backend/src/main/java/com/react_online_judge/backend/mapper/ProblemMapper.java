@@ -4,8 +4,13 @@ import com.react_online_judge.backend.dto.request.ProblemCreationRequest;
 import com.react_online_judge.backend.dto.request.ProblemUpdateRequest;
 import com.react_online_judge.backend.dto.response.ProblemResponse;
 import com.react_online_judge.backend.entity.Problem;
+import com.react_online_judge.backend.repository.ProblemRepository;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 

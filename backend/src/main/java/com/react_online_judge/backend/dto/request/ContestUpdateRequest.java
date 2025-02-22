@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Set;
 
 @Data
@@ -17,6 +18,7 @@ public class ContestUpdateRequest {
     String password; // Null if public
     LocalDateTime startAt;
     LocalDateTime endAt;
-    Set<Problem> problems;
+    Set<String> problems;
     String detail;
+    LocalDateTime updateAt;
 }

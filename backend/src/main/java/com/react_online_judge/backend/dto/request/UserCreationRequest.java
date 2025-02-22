@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
 import java.util.Set;
 
 @Data
@@ -32,4 +33,7 @@ public class UserCreationRequest {
     String lname;
     Set<String> roles;
     String avatar;
+    Date dob;
+    Date create_at;
+    String gender;
 }

@@ -1,15 +1,15 @@
 package com.react_online_judge.backend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +18,9 @@ public class Permission {
     @Id
     String name;
 
+    @Column(nullable = false, unique = true)
     String description;
-    @ManyToMany(mappedBy = "permissions")
-    Set<Role> holdingRoles;
+    @ManyToMany(mappedBy = "rolePermissions")
+    @JsonIgnoreProperties("rolePermissions")
+    Set<Role> roles;
 }

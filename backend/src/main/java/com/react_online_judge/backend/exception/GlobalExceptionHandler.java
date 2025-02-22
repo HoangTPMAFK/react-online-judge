@@ -13,6 +13,7 @@ public class GlobalExceptionHandler  {
     public ResponseEntity<APIResponse> ExceptionHandler(final Exception e) {
         APIResponse response = new APIResponse();
         ErrorCode error = ErrorCode.UNCATEGORIZED;
+        e.printStackTrace();
         response.setMessage(error.getMessage());
         response.setCode(error.getCode());
         return ResponseEntity.status(error.getHttpStatus()).body(response);

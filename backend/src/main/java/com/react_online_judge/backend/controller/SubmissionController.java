@@ -21,13 +21,13 @@ public class SubmissionController {
                 .data(submissionService.createSubmission(request))
                 .build();
     }
-    @GetMapping("/?submission={submissionId}/")
+    @GetMapping("/{submissionId}")
     APIResponse<SubmissionResponse> getSubmissionById(@PathVariable Long id) {
         return APIResponse.<SubmissionResponse>builder()
                 .data(submissionService.getSubmissionById(id))
                 .build();
     }
-    @GetMapping("/?problem={problemId}&user={userId}/")
+    @GetMapping("/problem/{problemId}/user/{userId}")
     APIResponse<SubmissionResponse> getProblemByProblemIdAndUserId(@PathVariable Long problemId, @PathVariable Long userId) {
         return APIResponse.<SubmissionResponse>builder()
                 .data(submissionService.getSubmissionByUserIdAndProblemId(userId, problemId))

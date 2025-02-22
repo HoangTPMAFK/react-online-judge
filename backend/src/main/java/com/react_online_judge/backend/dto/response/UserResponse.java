@@ -4,6 +4,7 @@ import com.react_online_judge.backend.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
 import java.util.Set;
 
 @Data
@@ -15,5 +16,9 @@ public class UserResponse {
     long id;
     String username;
     String email;
-    Set<Role> roles;
+    Set<String> roles;
+    String avatar;
+    Date dob;
+    Date create_at;
+    String gender;
 }

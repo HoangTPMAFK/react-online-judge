@@ -1,6 +1,6 @@
 package com.react_online_judge.backend.dto.request;
 
-import com.mongodb.lang.Nullable;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.react_online_judge.backend.entity.Problem;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Set;
 
 @Data
@@ -19,7 +20,6 @@ public class ContestCreationRequest {
     @NotBlank
     String title;
 
-    @Nullable
     String password; // Null if public
 
     @NotNull
@@ -28,6 +28,10 @@ public class ContestCreationRequest {
     @NotNull
     LocalDateTime endAt;
 
-    Set<Problem> problems;
+    Set<String> problems;
     String detail;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    LocalDateTime createAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
+    LocalDateTime updateAt;
 }

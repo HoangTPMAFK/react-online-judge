@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/contest/")
+@RequestMapping("/api/contest")
 public class ContestController {
     @Autowired
     ContestService contestService;
@@ -23,44 +23,45 @@ public class ContestController {
     ProblemService problemService;
     @Autowired
     UserService userService;
-    @GetMapping("/?contest={contestId}/")
-    APIResponse<ContestResponse> getContestById(@PathVariable Long contestId) {
+    @GetMapping("/")
+    public APIResponse<List<ContestResponse>> getAllContests() {
+        return APIResponse.<List<ContestResponse>>builder()
+                .data(contestService.getAllContests())
+                .build();
+    }
+    @GetMapping("/{contestId}")
+    public APIResponse<ContestResponse> getContestById(@PathVariable Long contestId) {
         return APIResponse.<ContestResponse>builder()
                 .data(contestService.getContestById(contestId))
                 .build();
     }
     @PostMapping("/")
-    APIResponse<ContestResponse> createContest(@RequestBody ContestCreationRequest request) {
+    public APIResponse<ContestResponse> createContest(@RequestBody ContestCreationRequest request) {
         return APIResponse.<ContestResponse>builder()
                 .data(contestService.createContest(request))
                 .build();
     }
-    @PutMapping("/?contest={contestId}/")
-    APIResponse<ContestResponse> updateContest(@PathVariable Long contestId, @RequestBody ContestUpdateRequest request) {
+    @PutMapping("/{contestId}")
+    public APIResponse<ContestResponse> updateContest(@PathVariable Long contestId, @RequestBody ContestUpdateRequest request) {
         return APIResponse.<ContestResponse>builder()
                 .data(contestService.updateContest(contestId, request))
                 .build();
     }
-    @DeleteMapping("/?contest={contestId}/")
-    APIResponse<ContestResponse> deleteContest(@PathVariable Long contestId) {
+    @DeleteMapping("/{contestId}/")
+    public APIResponse<ContestResponse> deleteContest(@PathVariable Long contestId) {
+        contestService.deleteContest(contestId);
         return APIResponse.<ContestResponse>builder()
                 .message("Contest successfully deleted")
                 .build();
     }
-    @GetMapping("/")
-    APIResponse<List<ContestResponse>> getAllContests() {
-        return APIResponse.<List<ContestResponse>>builder()
-                .data(contestService.getAllContests())
-                .build();
-    }
-    @GetMapping("/problem/?contest={contestId}")
-    APIResponse<List<ProblemResponse>> getContestProblem(@PathVariable Long contestId) {
+    @GetMapping("/problem/{contestId}")
+    public APIResponse<List<ProblemResponse>> getContestProblem(@PathVariable Long contestId) {
         return APIResponse.<List<ProblemResponse>>builder()
                 .data(problemService.getProblemsByContest(contestId))
                 .build();
     }
-    @GetMapping("/user/?contest={contestId}")
-    APIResponse<List<UserResponse>> getContestUser(@PathVariable Long contestId) {
+    @GetMapping("/user/{contestId}")
+    public APIResponse<List<UserResponse>> getContestUser(@PathVariable Long contestId) {
         return APIResponse.<List<UserResponse>>builder()
                 .data(userService.getParticipators(contestId))
                 .build();

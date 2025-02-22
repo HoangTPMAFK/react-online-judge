@@ -11,36 +11,36 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/problem/")
+@RequestMapping("/api/problem")
 public class ProblemController {
     @Autowired
     private ProblemService problemService;
-    @GetMapping("/?problem={problemId}")
-    APIResponse<ProblemResponse> getProblemByid(@PathVariable Long problemId) {
+    @GetMapping("/{problemId}")
+    public APIResponse<ProblemResponse> getProblemByid(@PathVariable Long problemId) {
         return APIResponse.<ProblemResponse>builder()
                 .data(problemService.getProblemById(problemId))
                 .build();
     }
     @GetMapping("/")
-    APIResponse<List<ProblemResponse>> getAllProblems() {
+    public APIResponse<List<ProblemResponse>> getAllProblems() {
         return APIResponse.<List<ProblemResponse>>builder()
                 .data(problemService.getAllProblems())
                 .build();
     }
     @PostMapping("/")
-    APIResponse<ProblemResponse> createProblem(@RequestBody ProblemCreationRequest request) {
+    public APIResponse<ProblemResponse> createProblem(@RequestBody ProblemCreationRequest request) {
         return APIResponse.<ProblemResponse>builder()
                 .data(problemService.createProblem(request))
                 .build();
     }
-    @PutMapping("/?problem={problemId}")
-    APIResponse<ProblemResponse> updateProblem(@PathVariable Long problemId, @RequestBody ProblemUpdateRequest request) {
+    @PutMapping("/{problemId}")
+    public APIResponse<ProblemResponse> updateProblem(@PathVariable Long problemId, @RequestBody ProblemUpdateRequest request) {
         return APIResponse.<ProblemResponse>builder()
                 .data(problemService.updateProblem(problemId, request))
                 .build();
     }
-    @DeleteMapping("/?problem={problemId}")
-    APIResponse<ProblemResponse> deleteProblem(@PathVariable Long problemId) {
+    @DeleteMapping("/{problemId}")
+    public APIResponse<ProblemResponse> deleteProblem(@PathVariable Long problemId) {
         problemService.deleteProblem(problemId);
         return APIResponse.<ProblemResponse>builder()
                 .message("Problem deleted")

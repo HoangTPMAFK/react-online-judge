@@ -3,6 +3,8 @@ package com.react_online_judge.backend.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -18,5 +20,7 @@ public class ProblemUpdateRequest {
     String difficult;
     String input;
     String output;
-    String sample_input_output; // JSON string
+    String sampleInputOutput;
+    String hiddenInputOutput;// JSON string
+    Date update_at;
 }

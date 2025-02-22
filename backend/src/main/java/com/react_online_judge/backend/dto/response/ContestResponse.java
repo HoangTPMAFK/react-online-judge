@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ContestResponse {
     long id;

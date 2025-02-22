@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -33,5 +35,7 @@ public class ProblemCreationRequest {
     String output;
 
     @NotBlank
-    String sample_input_output; // JSON string
+    String sampleInputOutput; // JSON string
+    String hiddenInputOutput;
+    Date create_at;
 }

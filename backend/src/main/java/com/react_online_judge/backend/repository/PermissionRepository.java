@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface PermissionRepository extends JpaRepository<Permission, Long> {
     Optional<Permission> findByName(String name);
-    @Query("SELECT p FROM Permission p JOIN p.holdingRoles r WHERE r.name = :role")
+    @Query("SELECT p FROM Permission p JOIN p.roles r WHERE r.name = :role")
     List<Permission> findByRole(@Param("role") String role);
     void deleteByName(String name);
 }
