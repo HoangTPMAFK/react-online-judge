@@ -1,6 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Account = () => {
+  const [day, setDay] = useState("2005-02-09"); // Ngày mặc định
+
+  const handleDateChange = (event) => {
+    const selectedDate = event.target.value;
+    setDay(selectedDate);
+  };
+
+  // // Chuyển đổi sang định dạng dd/MM/yyyy để hiển thị
+  // const formattedDob = dob ? new Date(dob).toLocaleDateString("vi-VN") : "";
+
   return (
     <div className="p-6 flex items-center h-screen justify-center">
       <div className="bg-white shadow rounded-lg p-6 flex w-full">
@@ -18,10 +28,10 @@ const Account = () => {
             Xóa tài khoản
           </button>
         </div>
-        
-        <div className="w-1/2 pl-6">
+
+        <div className="w-1/2 pl-6 mx-auto">
           <h2 className="text-2xl font-semibold mb-4">Account</h2>
-          <hr className="mb-4 border-gray-300"/>
+          <hr className="mb-4 border-gray-300" />
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-gray-700">Họ</label>
@@ -37,7 +47,13 @@ const Account = () => {
             </div>
             <div>
               <label className="block text-gray-700">Ngày sinh</label>
-              <input className="w-full p-2 border rounded" type="date" value="2005-02-09" />
+              <input
+                className="w-full p-2 border rounded"
+                type="date"
+                value={day}
+                onChange={handleDateChange}
+              />
+              {/* <p className="mt-2 text-gray-600">Đã chọn: {formattedDob}</p> */}
             </div>
           </div>
           <button className="mt-5 px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 w-full">

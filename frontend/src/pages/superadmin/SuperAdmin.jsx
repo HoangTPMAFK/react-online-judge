@@ -14,6 +14,8 @@ import AdminMobileMenu from '../../components/AdminMobileMenu';
 import User from './User/User';
 import UserDetail from './User/UserDetail';
 import SuperAdminAccount from './Login/SuperAdminAccount';
+import RolePermissionManager from './Role/RolePermissionManager';
+import PermissionManager from './Permission/PermissionManager';
 import { useState } from 'react';
 
 const SuperAdmin = () => {
@@ -72,6 +74,8 @@ const SuperAdmin = () => {
                 <Route path="/User" element={<User />} />
                 <Route path="/User/1" element={<UserDetail />} />
                 <Route path="/account/" element={<SuperAdminAccount />} />
+                <Route path="/role/" element={<RolePermissionManager />} />
+                <Route path="/permission/" element={<PermissionManager />} />
             </Routes>
 
             <footer className="w-full bg-white text-right p-4">

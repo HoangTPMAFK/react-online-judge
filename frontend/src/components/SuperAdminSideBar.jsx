@@ -1,18 +1,19 @@
 import React from 'react';
 import { Plus, Gauge, StickyNote, Table, AlignLeft, Tablet, Calendar, ArrowUpCircle, Trophy, User } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import Admin from '../pages/admin/Admin';
 
 const AdminSideBar = () => {
   const navItems = [
     { icon: <Gauge className="mr-3" />, label: 'Dashboard', href: '/' },
-    { icon: <Table className="mr-3" />, label: 'Tables', href: 'table' },
-    { icon: <AlignLeft className="mr-3" />, label: 'Forms', href: 'form' },
+    // { icon: <Table className="mr-3" />, label: 'Tables', href: 'table' },
+    // { icon: <AlignLeft className="mr-3" />, label: 'Forms', href: 'form' },
     { icon: <Tablet className="mr-3" />, label: 'Tabbed Content', href: 'tab' },
     { icon: <Trophy className="mr-3" />, label: 'Contest', href: 'contest' },
     { icon: <AlignLeft className="mr-3" />, label: 'Problem', href: 'problem' },
     { icon: <User className="mr-3" />, label: 'User', href: 'user' },
-    // { icon: <StickyNote className="mr-3" />, label: 'Blank Page', href: 'blank' },
-    // { icon: <Calendar className="mr-3" />, label: 'Calendar', href: 'calendar' },
+    { icon: <StickyNote className="mr-3" />, label: 'Role', href: 'Role' },
+    { icon: <Calendar className="mr-3" />, label: 'Permission', href: 'Permission' },
   ];
 
   return (

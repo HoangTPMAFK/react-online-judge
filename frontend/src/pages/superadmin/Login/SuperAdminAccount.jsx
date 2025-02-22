@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 
 const SuperAdminAccount = () => {
+  const [day, setDay] = useState("2005-02-09");
+  const handleDateChange = (event) => {
+    const selectDate = event.target.value;
+    setDay(selectDate);
+  }
   return (
     <div className="p-6 flex items-center h-screen justify-center">
       <div className="bg-white shadow rounded-lg p-6 flex w-full">
@@ -37,7 +42,7 @@ const SuperAdminAccount = () => {
             </div>
             <div>
               <label className="block text-gray-700">Ngày sinh</label>
-              <input className="w-full p-2 border rounded" type="date" value="2005-02-09" />
+              <input className="w-full p-2 border rounded" type="date" value={day} onChange={handleDateChange} />
             </div>
           </div>
           <button className="mt-5 px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 w-full">
