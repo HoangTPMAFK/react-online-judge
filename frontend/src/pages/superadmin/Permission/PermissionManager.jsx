@@ -45,7 +45,6 @@ const PermissionManager = () => {
     <div className="p-6 h-screen">
       <h2 className="text-2xl font-bold mb-4">Quản lý Permission</h2>
 
-      {/* Danh sách Role */}
       <div className="flex">
         <div className="w-1/3 border-r pr-4">
           <h3 className="font-semibold mb-2">Danh sách Permission</h3>
@@ -62,7 +61,6 @@ const PermissionManager = () => {
           ))}
         </div>
 
-        {/* Danh sách Permission */}
         <div className="w-2/3 pl-4">
           <h3 className="font-semibold mb-2">Chỉnh sửa quyền của Role</h3>
           {selectedRole ? (
