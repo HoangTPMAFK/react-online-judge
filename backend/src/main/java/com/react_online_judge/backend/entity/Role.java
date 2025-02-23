@@ -1,5 +1,6 @@
 package com.react_online_judge.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -7,7 +8,8 @@ import lombok.experimental.FieldDefaults;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,18 +18,15 @@ public class Role {
     @Id
     String name;
     String description;
-    @ManyToMany
-    @JoinTable(
-            name = "role_user",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_name")
-    )
+    @ManyToMany(mappedBy = "roles")
     Set<User> users;
-    @ManyToMany
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "role_permission",
             joinColumns = @JoinColumn(name = "role_name"),
             inverseJoinColumns = @JoinColumn(name = "permission_name")
     )
-    Set<Permission> permissions;
+    @JsonIgnoreProperties("roles")
+    Set<Permission> rolePermissions;
 }

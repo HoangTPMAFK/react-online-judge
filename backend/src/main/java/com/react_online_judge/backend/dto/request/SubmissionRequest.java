@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -15,10 +14,13 @@ import java.time.LocalDateTime;
 public class SubmissionRequest {
     @NotNull
     Long userId;
+
     @NotNull
     Long problemId;
+
     @NotBlank
     String sourceCode;
+
     @NotBlank
     String language;
 }

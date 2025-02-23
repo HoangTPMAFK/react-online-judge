@@ -1,13 +1,15 @@
 package com.react_online_judge.backend.dto.response;
 
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProblemResponse {
-    Long id;
+    long id;
     String title;
     String statement;
     int point;
@@ -17,6 +19,6 @@ public class ProblemResponse {
     String difficult;
     String input;
     String output;
-    String sample_input_output;
-    String hidden_input_output;
+    String sampleInputOutput;
+    String hiddenInputOutput;
 }

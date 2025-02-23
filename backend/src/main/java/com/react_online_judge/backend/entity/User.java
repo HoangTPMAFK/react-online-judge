@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -15,7 +16,8 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    long id;
+
     String username;
     String fname;
     String lname;
@@ -24,9 +26,20 @@ public class User {
     int point;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Submission> submissions;
-    @ManyToMany(mappedBy = "participatedUsers")
-    Set<Contest> participatedContests;
-    @ManyToMany(mappedBy = "users")
+
+    @OneToMany(mappedBy = "user")
+    Set<ContestParticipator> contestParticipators;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_name")
+    )
     Set<Role> roles;
+
     String avatar;
+    Date dob;
+    Date create_at;
+    String gender;
 }

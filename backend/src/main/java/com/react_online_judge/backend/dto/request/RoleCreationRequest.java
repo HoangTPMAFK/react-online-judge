@@ -14,7 +14,9 @@ import java.util.Set;
 public class RoleCreationRequest {
     @NotBlank
     String name;
+
     @NotBlank
     String description;
+
     Set<String> permissions;
 }

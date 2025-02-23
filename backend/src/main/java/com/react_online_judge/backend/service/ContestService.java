@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -22,21 +23,23 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ContestService {
+    @Autowired
     ContestRepository contestRepository;
+    @Autowired
     ContestMapper contestMapper;
-    ContestResponse getContestById(Long id) {
+    public ContestResponse getContestById(Long id) {
         Contest contest = contestRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.CONTEST_NOT_EXISTED));
         return contestMapper.toContestResponse(contest);
     }
-    ContestResponse getContestByTitle(String title) {
+    public ContestResponse getContestByTitle(String title) {
         Contest contest = contestRepository.findByTitle(title).orElseThrow(() -> new AppException(ErrorCode.CONTEST_NOT_EXISTED));
         return contestMapper.toContestResponse(contest);
     }
-    List<ContestResponse> getAllContests() {
+    public List<ContestResponse> getAllContests() {
         List<Contest> contests = contestRepository.findAll();
         return contestMapper.toContestResponseList(contests);
     }
-    ContestResponse createContest(ContestCreationRequest request) {
+    public ContestResponse createContest(ContestCreationRequest request) {
         Contest contest = contestMapper.toContest(request);
         try {
             contest = contestRepository.save(contest);
@@ -45,7 +48,7 @@ public class ContestService {
             throw new AppException(ErrorCode.CONTEST_EXISTED);
         }
     }
-    ContestResponse updateContest(Long id, ContestUpdateRequest request) {
+    public ContestResponse updateContest(Long id, ContestUpdateRequest request) {
         Contest contest = contestRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.CONTEST_NOT_EXISTED));
         contestMapper.updateContest(contest, request);
         try {
@@ -55,7 +58,7 @@ public class ContestService {
             throw new AppException(ErrorCode.CONTEST_EXISTED);
         }
     }
-    void deleteContest(Long id) {
+    public void deleteContest(Long id) {
         contestRepository.deleteById(id);
     }
 }
