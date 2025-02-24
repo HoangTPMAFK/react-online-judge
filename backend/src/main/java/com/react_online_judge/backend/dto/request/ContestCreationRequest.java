@@ -1,14 +1,12 @@
 package com.react_online_judge.backend.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.react_online_judge.backend.entity.Problem;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Set;
 
 @Data
@@ -24,6 +22,9 @@ public class ContestCreationRequest {
 
     @NotNull
     LocalDateTime startAt;
+
+    @NotNull
+    long creatorId;
 
     @NotNull
     LocalDateTime endAt;

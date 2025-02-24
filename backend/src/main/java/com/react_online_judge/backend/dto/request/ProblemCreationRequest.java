@@ -21,6 +21,10 @@ public class ProblemCreationRequest {
     int point;
 
     Boolean isPublic;
+
+    @NotBlank
+    String author;
+
     @NotNull
     int timeLimit;
 

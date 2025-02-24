@@ -14,23 +14,23 @@ function ProblemDetail() {
             <div className="grid grid-cols-2 grid-rows-1 gap-4">
                 <div className="flex flex-row justify-between mb-4">
                     <div className="text-xl">Title</div>
-                    <input type="text" className="w-60 pl-2 h-8" />
+                    <input type="text" className="w-60 border pl-2 h-8" />
                 </div>
                 <div className="flex flex-row justify-between mb-4">
                     <div className="text-xl">Problem Statement</div>
-                    <textarea className="w-60 h-20 px-1"></textarea>
+                    <textarea className="w-60 border h-20 px-1"></textarea>
                 </div>
                 <div className="flex flex-row justify-between mb-4">
                     <div className="text-xl">Time limit</div>
-                    <input type="number" className="w-60 pl-2 h-8" placeholder="In milliseconds" />
+                    <input type="number" className="w-60 border pl-2 h-8" placeholder="In milliseconds" />
                 </div>
                 <div className="flex flex-row justify-between mb-4">
                     <div className="text-xl">Memory limit</div>
-                    <input type="number" className="w-60 pl-2 h-8" placeholder="In KBs" />
+                    <input type="number" className="w-60 border pl-2 h-8" placeholder="In KBs" />
                 </div>
                 <div className="flex flex-row justify-between mb-4">
                     <div className="text-xl">Points</div>
-                    <input type="number" className="w-60 pl-2 h-8" />
+                    <input type="number" className="w-60 border pl-2 h-8" />
                 </div>
                 <div className="flex flex-row justify-between mb-4">
                     <div className="text-xl">Public</div>
@@ -38,7 +38,7 @@ function ProblemDetail() {
                 </div>
                 <div className="flex flex-row justify-between mb-4">
                     <div className="text-xl">Level</div>
-                    <select className="w-44">
+                    <select className="w-44 border-2">
                         <option>Easy</option>
                         <option>Medium</option>
                         <option>Hard</option>
@@ -46,7 +46,7 @@ function ProblemDetail() {
                 </div>
                 <div className="flex flex-row justify-between mb-4">
                     <div className="text-xl">End at</div>
-                    <input type="datetime-local" className="w-60" />
+                    <input type="datetime-local" className="w-60 border" />
                 </div>
                 <div className="flex flex-row justify-between mb-4">
                     <div className="text-xl">Input</div>

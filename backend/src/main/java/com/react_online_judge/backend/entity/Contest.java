@@ -21,7 +21,7 @@ public class Contest {
     long id;
     @Column(nullable = false, unique = true)
     String title;
-    Long creatorId;
+    long creatorId;
     String password; // Null if public
     LocalDateTime startAt;
     LocalDateTime endAt;
