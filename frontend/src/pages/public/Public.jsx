@@ -1,14 +1,14 @@
-import { Link, Route, Routes } from 'react-router-dom';
-import Home from './Home/Home';
-import Problem from './Problems/Problem';
-import Contest from './Contest/Contest';
-import Rank from './Rank/Rank';
-import ProblemDetail from './Problems/ProblemDetail';
-import Register from './Register/Register';
-import Login from './Login/Login';
-import ContestDetail from './Contest/ContestDetail';
-import User from './User/User';
-import Account from './Login/Account';
+import { Link, Route, Routes } from "react-router-dom";
+import Home from "./Home/Home";
+import Problem from "./Problems/Problem";
+import Contest from "./Contest/Contest";
+import Rank from "./Rank/Rank";
+import ProblemDetail from "./Problems/ProblemDetail";
+import Register from "./Register/Register";
+import Login from "./Login/Login";
+import ContestDetail from "./Contest/ContestDetail";
+import User from "./User/User";
+import Account from "./Login/Account";
 
 function Public() {
   return (
@@ -17,7 +17,7 @@ function Public() {
         <div className="flex flex-row items-center">
           <img
             className="h-16 w-16 cursor-pointer"
-            src={'/logo512.png'}
+            src={"/logo512.png"}
             onClick={() => (window.location.href = `/`)}
           />
           <ul className="px-4 flex flex-row">
@@ -32,7 +32,7 @@ function Public() {
               </Link>
             </li>
             <li>
-              <Link to="/contest" className="px-4">
+              <Link to="/contest" className="px-4 font-medium text-gray-800">
                 Contests
               </Link>
             </li>
