@@ -65,7 +65,7 @@ function ContestDetail() {
 
       {/* Problems List */}
       <div>
-        <div className="text-xl">Problems</div>
+        <div className="text-xl">Problem</div>
         <div className="flex justify-center mb-4">
           <input
             type="text"
