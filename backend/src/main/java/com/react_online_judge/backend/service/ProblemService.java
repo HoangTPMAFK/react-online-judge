@@ -3,11 +3,12 @@ package com.react_online_judge.backend.service;
 import com.react_online_judge.backend.dto.request.ProblemCreationRequest;
 import com.react_online_judge.backend.dto.request.ProblemUpdateRequest;
 import com.react_online_judge.backend.dto.response.ProblemResponse;
+import com.react_online_judge.backend.entity.Announcement;
 import com.react_online_judge.backend.entity.Problem;
 import com.react_online_judge.backend.exception.AppException;
 import com.react_online_judge.backend.exception.ErrorCode;
 import com.react_online_judge.backend.mapper.ProblemMapper;
-import com.react_online_judge.backend.repository.ContestRepository;
+import com.react_online_judge.backend.repository.AnnouncementRepository;
 import com.react_online_judge.backend.repository.ProblemRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -24,8 +26,8 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProblemService {
     ProblemRepository problemRepository;
-    ContestRepository contestRepository;
     ProblemMapper problemMapper;
+    AnnouncementRepository announcementRepository;
     public ProblemResponse getProblemById(Long id) {
         Problem problem = problemRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PROBLEM_NOT_EXISTED));
         return problemMapper.toProblemResponse(problem);
@@ -45,7 +47,16 @@ public class ProblemService {
     public ProblemResponse createProblem(ProblemCreationRequest request) {
         Problem problem = problemMapper.toProblem(request);
         try {
-            problemRepository.save(problem);
+            problem = problemRepository.save(problem);
+            if (problem.isPublic()) {
+                Announcement announcement = Announcement.builder()
+                        .title(problem.getTitle())
+                        .author(problem.getAuthor())
+                        .createAt(LocalDateTime.now())
+                        .href("/problem/" + problem.getId())
+                        .build();
+                announcementRepository.save(announcement);
+            }
             return problemMapper.toProblemResponse(problem);
         } catch (DataIntegrityViolationException e) {
             throw new AppException(ErrorCode.PROBLEM_EXISTED);

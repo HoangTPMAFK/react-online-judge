@@ -26,6 +26,7 @@ public class Problem {
     boolean isPublic;
     int timeLimit;
     int memoryLimit;
+    String author;
     String difficult;
     String input;
     String output;

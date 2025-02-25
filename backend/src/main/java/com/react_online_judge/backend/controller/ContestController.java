@@ -66,4 +66,10 @@ public class ContestController {
                 .data(userService.getParticipators(contestId))
                 .build();
     }
+    @GetMapping("/my-created-contests/{userId}")
+    public APIResponse<List<ContestResponse>> getMyCreatedContests(@PathVariable Long userId) {
+        return APIResponse.<List<ContestResponse>>builder()
+                .data(contestService.getMyCreatedContests(userId))
+                .build();
+    }
 }

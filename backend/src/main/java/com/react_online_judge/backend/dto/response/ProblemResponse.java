@@ -14,6 +14,7 @@ public class ProblemResponse {
     String statement;
     int point;
     Boolean isPublic;
+    String author;
     int timeLimit;
     int memoryLimit;
     String difficult;

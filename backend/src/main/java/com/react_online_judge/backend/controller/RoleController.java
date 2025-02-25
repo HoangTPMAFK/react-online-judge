@@ -45,5 +45,4 @@ public class RoleController {
                 .message("Role deleted")
                 .build();
     }
-
 }
