@@ -27,6 +27,12 @@ public class ProblemController {
                 .data(problemService.getAllProblems())
                 .build();
     }
+    @GetMapping("/public")
+    public APIResponse<List<ProblemResponse>> getAllPublicProblems() {
+        return APIResponse.<List<ProblemResponse>>builder()
+                .data(problemService.getAllPublicProblems())
+                .build();
+    }
     @PostMapping("/")
     public APIResponse<ProblemResponse> createProblem(@RequestBody ProblemCreationRequest request) {
         return APIResponse.<ProblemResponse>builder()

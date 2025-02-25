@@ -223,6 +223,7 @@ function Contests() {
           cells: { style: { paddingLeft: "12px", paddingRight: "12px" } },
           rows: { style: { minHeight: "48px" } },
         }}
+        onRowClicked={(row) => window.location.href = `/contest/${row.no}`}
       />
     </div>
   );

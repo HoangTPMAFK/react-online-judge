@@ -20,7 +20,7 @@ public class ProblemCreationRequest {
     @NotNull
     int point;
 
-    Boolean isPublic;
+    boolean publicFlag;
 
     @NotBlank
     String author;

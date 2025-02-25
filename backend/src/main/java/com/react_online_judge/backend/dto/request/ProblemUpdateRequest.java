@@ -14,7 +14,7 @@ public class ProblemUpdateRequest {
     String title;
     String statement;
     int point;
-    Boolean isPublic;
+    boolean publicFlag;
     int timeLimit;
     int memoryLimit;
     String difficult;

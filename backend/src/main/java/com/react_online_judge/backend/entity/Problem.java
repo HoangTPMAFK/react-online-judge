@@ -23,7 +23,9 @@ public class Problem {
 
     String statement;
     int point;
-    boolean isPublic;
+    @Column(name = "is_public")
+    boolean publicFlag;
+
     int timeLimit;
     int memoryLimit;
     String author;

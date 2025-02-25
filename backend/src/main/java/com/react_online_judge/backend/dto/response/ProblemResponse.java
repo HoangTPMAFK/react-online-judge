@@ -13,13 +13,13 @@ public class ProblemResponse {
     String title;
     String statement;
     int point;
-    Boolean isPublic;
-    String author;
+    boolean publicFlag;
     int timeLimit;
     int memoryLimit;
+    String author;
     String difficult;
     String input;
     String output;
-    String sampleInputOutput;
-    String hiddenInputOutput;
+    String sampleInputOutput; // JSON string
+    String hiddenInputOutput; // JSON string
 }

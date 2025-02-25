@@ -44,11 +44,15 @@ public class ProblemService {
         List<Problem> problems = problemRepository.findByContestId(contestId);
         return problemMapper.toProblemResponseList(problems);
     }
+    public List<ProblemResponse> getAllPublicProblems() {
+        List<Problem> problems = problemRepository.findAllByPublicFlag(true);
+        return problemMapper.toProblemResponseList(problems);
+    }
     public ProblemResponse createProblem(ProblemCreationRequest request) {
         Problem problem = problemMapper.toProblem(request);
         try {
             problem = problemRepository.save(problem);
-            if (problem.isPublic()) {
+            if (problem.isPublicFlag()) {
                 Announcement announcement = Announcement.builder()
                         .title(problem.getTitle())
                         .author(problem.getAuthor())
