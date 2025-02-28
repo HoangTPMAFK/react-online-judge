@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,14 +25,12 @@ import java.util.List;
 public class PermissionService {
     PermissionRepository permissionRepository;
     PermissionMapper permissionMapper;
-    public PermissionResponse getPermissionResponse(String name) {
-        Permission permission = permissionRepository.findByName(name).orElseThrow(() -> new AppException(ErrorCode.PERMISSION_NOT_EXISTED));
-        return permissionMapper.toPermissionResponse(permission);
-    }
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public List<PermissionResponse> getAllPermissions() {
         List<Permission> permissions = permissionRepository.findAll();
         return permissionMapper.toPermissionResponseList(permissions);
     }
+    @PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('CREATE_PERMISSION')")
     public PermissionResponse createPermission(PermissionCreationRequest request) {
         Permission permission = permissionMapper.toPermission(request);
         try {
@@ -41,6 +40,7 @@ public class PermissionService {
             throw new AppException(ErrorCode.PERMISSION_EXISTED);
         }
     }
+    @PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('UPDATE_PERMISSION')")
     public PermissionResponse updatePermission(String name, PermissionUpdateRequest request) {
         Permission permission = permissionRepository.findByName(name).orElseThrow(() -> new AppException(ErrorCode.PERMISSION_NOT_EXISTED));
         permissionMapper.updatePermission(permission, request);
@@ -51,9 +51,11 @@ public class PermissionService {
             throw new AppException(ErrorCode.PERMISSION_EXISTED);
         }
     }
+    @PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('DELETE_PERMISSION')")
     public void deletePermission(String name) {
         permissionRepository.deleteByName(name);
     }
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public  List<PermissionResponse> getPermissionsByRole(String role) {
         List<Permission> permission = permissionRepository.findByRole(role);
         return permissionMapper.toPermissionResponseList(permission);

@@ -2,6 +2,7 @@ package com.react_online_judge.backend.controller;
 
 import com.nimbusds.jose.JOSEException;
 import com.react_online_judge.backend.dto.request.ContestCreationRequest;
+import com.react_online_judge.backend.dto.request.ContestJoinRequest;
 import com.react_online_judge.backend.dto.request.ContestUpdateRequest;
 import com.react_online_judge.backend.dto.response.APIResponse;
 import com.react_online_judge.backend.dto.response.ContestResponse;
@@ -40,9 +41,9 @@ public class ContestController {
                 .build();
     }
     @PostMapping("/{contestId}/join")
-    public APIResponse<ContestResponse> joinContest(@PathVariable Long contestId, @RequestHeader("Authorization") String token) throws ParseException, JOSEException {
+    public APIResponse<ContestResponse> joinContest(@PathVariable Long contestId, @RequestHeader("Authorization") String token, @RequestBody ContestJoinRequest request) throws ParseException, JOSEException {
         return APIResponse.<ContestResponse>builder()
-                .data(contestService.joinContest(contestId, token))
+                .data(contestService.joinContest(contestId, token, request))
                 .build();
     }
     @PostMapping("/")

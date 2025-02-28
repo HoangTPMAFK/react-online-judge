@@ -18,6 +18,7 @@ import com.react_online_judge.backend.repository.UserRepository;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ public class AuthenticateService {
     @Value("${jwt.secret-key}")
     private String SECRET_KEY;
 
+    @PreAuthorize("permitAll()")
     public AuthenticateResponse authenticate(AuthenticateRequest request) {
         User user = userRepository.findByUsername(request.getUsername()).orElse(null);
         if (user == null) {
@@ -47,7 +49,7 @@ public class AuthenticateService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean isAuthenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if (!isAuthenticated) {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
         } else {
             return AuthenticateResponse.builder()
                     .isAuthenticated(true)
@@ -55,6 +57,7 @@ public class AuthenticateService {
                     .build();
         }
     }
+    @PreAuthorize("permitAll()")
     public IntrospectReponse introspect(IntrospectRequest request) {
         String token = request.getToken();
         try {
@@ -71,12 +74,13 @@ public class AuthenticateService {
                     .account(userMapper.toUserResponse(getUserFromToken(token)))
                     .build();
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return IntrospectReponse.builder()
                     .valid(false)
                     .build();
         }
     }
+    @PreAuthorize("isAuthenticated()")
     public void logout(String token) throws ParseException, JOSEException {
         try {
             var signedToken = verifiedToken(token, false);
@@ -87,6 +91,7 @@ public class AuthenticateService {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
     }
+    @PreAuthorize("denyAll()")
     public String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
         Set<Permission> permissions = new HashSet<>();
@@ -111,6 +116,7 @@ public class AuthenticateService {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
     }
+    @PreAuthorize("denyAll()")
     public User getUserFromToken(String token) throws ParseException, JOSEException {
         log.info("getUserFromToken: {}", token);
         SignedJWT signedJWT = SignedJWT.parse(token.replace("Bearer ", ""));
@@ -122,7 +128,7 @@ public class AuthenticateService {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         return user;
     }
-
+    @PreAuthorize("denyAll()")
     public SignedJWT verifiedToken(String token, boolean isRefresh) throws ParseException, JOSEException {
         if (token == null || token.isEmpty()) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
@@ -139,16 +145,19 @@ public class AuthenticateService {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
     }
+    @PreAuthorize("denyAll()")
     public String permissionsToString(Set<Permission> convertor) {
         StringJoiner joiner = new StringJoiner(" ");
         convertor.forEach(item -> joiner.add(item.getName()));
         return joiner.toString();
     }
+    @PreAuthorize("denyAll()")
     public String roleToString(Set<Role> convertor) {
         StringJoiner joiner = new StringJoiner(" ");
         convertor.forEach(item -> joiner.add(item.getName()));
         return joiner.toString();
     }
+    @PreAuthorize("denyAll()")
     public String contestsToString(Set<ContestParticipator> convertor) {
         StringJoiner joiner = new StringJoiner(" ");
         convertor.forEach(item -> joiner.add(item.getContest().getId() + ""));

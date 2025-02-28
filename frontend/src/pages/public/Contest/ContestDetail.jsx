@@ -1,10 +1,21 @@
 import DataTable from "react-data-table-component";
 import ReactHtmlParser from 'react-html-parser'; 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 function ContestDetail() {
+    function getCookie(name) {
+        const cookies = document.cookie.split("; ");
+        for (let cookie of cookies) {
+            let [key, value] = cookie.split("=");
+            if (key === name) {
+                return decodeURIComponent(value);
+            }
+        }
+        return null;
+    }
     const { id } = useParams();
+    const contestPassword = useRef(null);
     const problemColumns = [
         { name: "#", selector: row => row.id, sortable: true },
         { name: "Title", selector: row => row.title },
@@ -98,6 +109,32 @@ function ContestDetail() {
             },
         },
     };
+    const joinContest = async () => {
+        if (!getCookie("token")) {
+            alert("You haven't login yet");
+            window.location.href = "/login";
+        }
+        try {
+            const response = await fetch(`http://localhost:8080/contest-programing/api/contest/${contest.id}/join`, {
+                method: "POST",
+                headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getCookie("token")}` // Include token
+                },
+                body: JSON.stringify({password: contestPassword.current.value})
+            });      
+        
+            const jsonData = await response.json();
+            if (!response.ok) {
+                alert(jsonData.message)
+                throw new Error(`HTTP error! Status: ${response.status}.`);
+            } else {
+                alert("Join contest successfully");
+            }
+        } catch (error) {
+            console.error("Error while joining contest: ", error);
+        }
+    }
 
     return (
         <div className="mx-8 p-8 bg-white">
@@ -153,8 +190,8 @@ function ContestDetail() {
             </div>
             <div className="my-4">
                 <div>Password: </div>
-                <input type="text" className="px-2 py-1 border" placeholder="Plank if no password" />
-                <button className="bg-blue-600 text-white py-1 px-2 rounded-md ml-4">Enter</button>
+                <input type="text" className="px-2 py-1 border" placeholder="Plank if no password" ref={contestPassword} />
+                <button className="bg-blue-600 text-white py-1 px-2 rounded-md ml-4" onClick={joinContest}>Enter</button>
             </div>
             <div className="grid grid-cols-2 gap-4">
                 <div>

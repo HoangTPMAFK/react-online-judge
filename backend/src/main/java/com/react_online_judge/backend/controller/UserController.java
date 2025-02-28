@@ -48,9 +48,10 @@ public class UserController {
                 .message("User deleted")
                 .build();
     }
-    @GetMapping("/my-profile/")
-    APIResponse<UserResponse> getMyProfile() {
+    @PostMapping("/create-account")
+    APIResponse<UserResponse> createAccount(@RequestBody UserCreationRequest request) {
         return APIResponse.<UserResponse>builder()
+                .data(userService.createAccount(request))
                 .build();
     }
     @PutMapping("/my-profile/")

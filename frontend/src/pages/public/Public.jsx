@@ -14,7 +14,53 @@ import { FaRankingStar } from "react-icons/fa6";
 import { MdBarChart } from "react-icons/md";
 import { LuTableProperties } from "react-icons/lu";
 import { IoMdHome } from "react-icons/io";
+import { useEffect, useState } from "react";
+
 function Public() {
+  function getCookie(name) {
+    const cookies = document.cookie.split("; ");
+    for (let cookie of cookies) {
+      let [key, value] = cookie.split("=");
+      if (key === name) {
+        return decodeURIComponent(value);
+      }
+    }
+    return null;
+  }
+
+  const [account, setAccount] = useState(null);
+
+  useEffect(() => {
+    async function introspect() {
+      try {
+        const response = await fetch(
+          "http://localhost:8080/contest-programing/api/auth/introspect",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token: getCookie("token") }),
+          }
+        );
+        const jsonData = await response.json();
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}.`);
+        }
+
+        console.log("API Response:", jsonData.data);
+        setAccount(jsonData.data.account);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    introspect();
+  }, []);
+
+  useEffect(() => {
+    console.log("Updated account:", account);
+  }, [account]);
+
   return (
     <div className="min-w-[860px]">
       <nav className="flex flex-row justify-between font-medium text-xl border-b shadow-md px-4">
@@ -26,70 +72,74 @@ function Public() {
           />
           <ul className="px-8 flex flex-row">
             <li>
-              <div className="flex flex-row space-x-2 items-center">
-                <Link
-                  to="/"
-                  className="flex space-x-3 px-4 hover:text-[#61DAFB] duration-500 ease-in-out"
-                >
-                  <IoMdHome className="w-5 h-5 mt-1" />
-                  <span> Home</span>
-                </Link>
-              </div>
+              <Link
+                to="/"
+                className="flex space-x-3 px-4 hover:text-[#61DAFB] duration-500 ease-in-out"
+              >
+                <IoMdHome className="w-5 h-5 mt-1" />
+                <span> Home</span>
+              </Link>
             </li>
             <li>
-              <div className="flex flex-row space-x-2 items-center">
-                <Link
-                  to="/problem"
-                  className="flex space-x-3 px-4 hover:text-[#61DAFB] duration-500 ease-in-out"
-                >
-                  <LuTableProperties className="w-5 h-5 mt-1.5" />
-                  <span> Problems</span>
-                </Link>
-              </div>
+              <Link
+                to="/problem"
+                className="flex space-x-3 px-4 hover:text-[#61DAFB] duration-500 ease-in-out"
+              >
+                <LuTableProperties className="w-5 h-5 mt-1.5" />
+                <span> Problems</span>
+              </Link>
             </li>
             <li>
-              <div className="flex flex-row space-x-2 items-center">
-                <Link
-                  to="/contest"
-                  className="flex space-x-3 px-4 hover:text-[#61DAFB] duration-500 ease-in-out"
-                >
-                  <FaTrophy className="w-5 h-5 mt-1.5" />
-                  <span> Contests</span>
-                </Link>
-              </div>
+              <Link
+                to="/contest"
+                className="flex space-x-3 px-4 hover:text-[#61DAFB] duration-500 ease-in-out"
+              >
+                <FaTrophy className="w-5 h-5 mt-1.5" />
+                <span> Contests</span>
+              </Link>
             </li>
             <li>
-              <div className="flex flex-row space-x-2 items-center">
-                <Link
-                  to="/rank"
-                  className="flex space-x-3 px-4 hover:text-[#61DAFB] duration-500 ease-in-out"
-                >
-                  <FaRankingStar className="w-5 h-5 mt-1.5" />
-                  <span>Rank</span>
-                </Link>
-              </div>
+              <Link
+                to="/rank"
+                className="flex space-x-3 px-4 hover:text-[#61DAFB] duration-500 ease-in-out"
+              >
+                <FaRankingStar className="w-5 h-5 mt-1.5" />
+                <span>Rank</span>
+              </Link>
             </li>
           </ul>
         </div>
 
-        <ul className="px-4 flex flex-row items-center">
-          <li>
-            <Link
-              to="/login"
-              className="px-4 hover:text-blue-700 duration-500 ease-in-out"
-            >
-              Login
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/register"
-              className="px-4 hover:text-blue-700 duration-500 ease-in-out"
-            >
-              Register
-            </Link>
-          </li>
-        </ul>
+        {/* ✅ Hiển thị thông tin tài khoản nếu đã đăng nhập */}
+        {account ? (
+          <div className="flex items-center space-x-2 hover:cursor-pointer" onClick={() => window.location.href = "/account"}>
+            <img
+              src={account.avatar}
+              className="h-10 w-10 rounded-full"
+              alt="User Avatar"
+            />
+            <span className="text-xl font-bold">{account.username}</span>
+          </div>
+        ) : (
+          <ul className="px-4 flex flex-row items-center">
+            <li>
+              <Link
+                to="/login"
+                className="px-4 hover:text-blue-700 duration-500 ease-in-out"
+              >
+                Login
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/register"
+                className="px-4 hover:text-blue-700 duration-500 ease-in-out"
+              >
+                Register
+              </Link>
+            </li>
+          </ul>
+        )}
       </nav>
       <div className="bg-slate-50 py-12">
         <div>

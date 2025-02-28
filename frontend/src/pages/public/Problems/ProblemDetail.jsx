@@ -158,23 +158,23 @@ function ProblemDetail() {
               <ul className="p-4">
                 <li className="flex justify-between border-b py-2">
                   <div>ID</div>
-                  <div>1</div>
+                  <div>{problem.id}</div>
                 </li>
                 <li className="flex justify-between border-b py-2">
                   <div>Level</div>
-                  <div>Easy</div>
+                  <div>{problem.difficult}</div>
                 </li>
                 <li className="flex justify-between border-b py-2">
                   <div>Time limit</div>
-                  <div>1s</div>
+                  <div>{problem.timeLimit}s</div>
                 </li>
                 <li className="flex justify-between border-b py-2">
                   <div>Memory limit</div>
-                  <div>256MB</div>
+                  <div>{problem.memoryLimit}MB</div>
                 </li>
                 <li className="flex justify-between border-b py-2">
                   <div>Author</div>
-                  <div>root</div>
+                  <div>{problem.author}</div>
                 </li>
               </ul>
             </div>

@@ -8,6 +8,7 @@ import com.react_online_judge.backend.repository.AnnouncementRepository;
 import com.react_online_judge.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,11 +19,13 @@ import java.util.List;
 public class AnnouncementService {
     private final AnnouncementRepository announcementRepository;
     private final AnnouncementMapper announcementMapper;
+    @PreAuthorize("denyAll()")
     public AnnouncementResponse createAnnouncement(AnnouncementRequest announcementRequest) {
         Announcement announcement = announcementMapper.toAnnouncement(announcementRequest);
         announcementRepository.save(announcement);
         return announcementMapper.toAnnouncementResponse(announcement);
     }
+    @PreAuthorize("permitAll()")
     public List<AnnouncementResponse> getAllAnnouncements() {
         List<Announcement> announcements = announcementRepository.findAll();
         return announcementMapper.toAnnouncementResponses(announcements);
