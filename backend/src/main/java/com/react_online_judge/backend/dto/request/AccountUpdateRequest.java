@@ -1,12 +1,8 @@
 package com.react_online_judge.backend.dto.request;
 
-import com.react_online_judge.backend.entity.Contest;
-import com.react_online_judge.backend.entity.Role;
-import com.react_online_judge.backend.entity.Submission;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import com.react_online_judge.backend.validation.PasswordConfirm;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,16 +11,19 @@ import java.util.Date;
 import java.util.Set;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserCreationRequest {
-    @Size(min = 6, message = "Username must be at least 6 characters")
-    String username;
-
-    @Size(min = 8, message = "Password must be at least 6 characters")
+@PasswordConfirm
+public class AccountUpdateRequest {
     String password;
+
+    @Size(min = 8, message = "Password must be at least 8 characters")
+    @NotBlank
+    String newPassword;
+
+    String confirmPassword;
 
     @Email(message = "Invalid email format")
     String email;

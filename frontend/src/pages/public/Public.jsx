@@ -97,12 +97,12 @@ function Public() {
             <Route path="/" element={<Home />} />
             <Route path="problem" element={<Problem />} />
             <Route path="contest" element={<Contest />} />
-            <Route path="contest/1" element={<ContestDetail />} />
+            <Route path="contest/:id" element={<ContestDetail />} />
             <Route path="rank" element={<Rank />} />
-            <Route path="problem/1" element={<ProblemDetail />} />
+            <Route path="problem/:id" element={<ProblemDetail />} />
             <Route path="register" element={<Register />} />
             <Route path="login" element={<Login />} />
-            <Route path="user/1" element={<User />} />
+            <Route path="user/:id" element={<User />} />
             <Route path="account" element={<Account />} />
           </Routes>
         </div>

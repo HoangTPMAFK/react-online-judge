@@ -1,23 +1,28 @@
 package com.react_online_judge.backend.entity;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
+@Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-
+    @Column(nullable = false, unique = true)
     String username;
     String fname;
     String lname;
@@ -28,7 +33,10 @@ public class User {
     Set<Submission> submissions;
 
     @OneToMany(mappedBy = "user")
-    Set<ContestParticipator> contestParticipators;
+    Set<ContestParticipator> contestParticipators = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    Set<SolvedProblem> solvedProblems = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -40,6 +48,6 @@ public class User {
 
     String avatar;
     Date dob;
-    Date create_at;
+    LocalDateTime createAt = LocalDateTime.now();
     String gender;
 }

@@ -1,9 +1,12 @@
 import DataTable from "react-data-table-component";
-import { useState } from "react";
+import ReactHtmlParser from 'react-html-parser'; 
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 function ContestDetail() {
+    const { id } = useParams();
     const problemColumns = [
-        { name: "#", selector: row => row.no, sortable: true },
+        { name: "#", selector: row => row.id, sortable: true },
         { name: "Title", selector: row => row.title },
         { name: "Point", selector: row => row.point, sortable: true }
     ];
@@ -11,20 +14,22 @@ function ContestDetail() {
     const userColumns = [
         { name: "#", selector: row => row.rank, sortable: true },
         { name: "Username", selector: row => row.username },
-        { name: "Score", selector: row => row.score, sortable: true }
+        { name: "Score", selector: row => row.point, sortable: true }
     ];
 
-    const [data, setData] = useState([
-        { no: 1, title: "Problem A", point: 100 },
-        { no: 2, title: "Problem B", point: 200 },
-        { no: 3, title: "Problem C", point: 300 },
-        { no: 4, title: "Problem D", point: 100 },
-        { no: 5, title: "Problem E", point: 200 },
-        { no: 6, title: "Problem F", point: 300 },
-        { no: 7, title: "Problem G", point: 100 },
-        { no: 8, title: "Problem H", point: 200 },
-        { no: 9, title: "Problem I", point: 300 },
-        { no: 10, title: "Problem J", point: 100 },
+    const [contest, setContest] = useState(Object);
+
+    const [problems, setProblems] = useState([
+        { id: 1, title: "Problem A", point: 100 },
+        { id: 2, title: "Problem B", point: 200 },
+        { id: 3, title: "Problem C", point: 300 },
+        { id: 4, title: "Problem D", point: 100 },
+        { id: 5, title: "Problem E", point: 200 },
+        { id: 6, title: "Problem F", point: 300 },
+        { id: 7, title: "Problem G", point: 100 },
+        { id: 8, title: "Problem H", point: 200 },
+        { id: 9, title: "Problem I", point: 300 },
+        { id: 10, title: "Problem J", point: 100 },
     ]);
 
     const [topUsers, setTopUsers] = useState([
@@ -39,6 +44,33 @@ function ContestDetail() {
         { rank: 9, username: "Ivan", score: 800 },
         { rank: 10, username: "Jack", score: 750 },
     ]);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await fetch("http://localhost:8080/contest-programing/api/contest/"+id);
+                if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const jsonData = await response.json();
+                setContest(jsonData.data || Object);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+        fetchData();
+    }, []);
+    useEffect(() => {
+        setProblems(contest.problems);
+        if (contest.contestParticipators)
+            setTopUsers([...contest.contestParticipators]
+                .sort((a, b) => a.point - b.point)
+                .map((user, index) => ({
+                    ...user,
+                    rank: index+1
+                }))
+            );
+    }, [contest]);
 
     const customStyles = {
         headRow: {
@@ -69,25 +101,55 @@ function ContestDetail() {
 
     return (
         <div className="mx-8 p-8 bg-white">
-            <p className="text-4xl font-semibold">2024 ACM Qualifier</p>
-            <p className="py-2">Started at: 2024-9-19 13:00</p>
-            <p className="py-2">Ended at: 2024-9-20 13:00</p>
+            <p className="text-4xl font-semibold">{contest.title}</p>
+            <p className="py-2">
+            Started at:{" "}
+            {contest.startAt ? (
+                new Date(
+                contest.startAt[0], // Year
+                contest.startAt[1] - 1, // Month (0-based)
+                contest.startAt[2], // Day
+                contest.startAt[3] || 0, // Hour
+                contest.startAt[4] || 0, // Minute
+                contest.startAt[5] || 0 // Second
+                ).toLocaleString("en-GB", { 
+                day: "2-digit", 
+                month: "2-digit", 
+                year: "numeric", 
+                hour: "2-digit", 
+                minute: "2-digit", 
+                second: "2-digit" 
+                })
+            ) : (
+                "Loading..."
+            )}
+            </p>
+
+            <p className="py-2">
+            Ended at:{" "}
+            {contest.endAt ? (
+                new Date(
+                contest.endAt[0], // Year
+                contest.endAt[1] - 1, // Month (0-based)
+                contest.endAt[2], // Day
+                contest.endAt[3] || 0, // Hour
+                contest.endAt[4] || 0, // Minute
+                contest.endAt[5] || 0 // Second
+                ).toLocaleString("en-GB", { 
+                day: "2-digit", 
+                month: "2-digit", 
+                year: "numeric", 
+                hour: "2-digit", 
+                minute: "2-digit", 
+                second: "2-digit" 
+                })
+            ) : (
+                "Loading..."
+            )}
+            </p>
+
             <div>
-                <p className="mt-4">
-                    The <span className="font-semibold">2024 ACM Qualifier</span> is a prestigious 
-                    competitive programming contest where teams of three tackle a series of 
-                    algorithmic problems within a limited timeframe. Participants will be tested 
-                    on their problem-solving skills, coding efficiency, and teamwork. 
-                </p>
-                <p className="mt-2">
-                    The contest follows the ICPC format, with penalties for incorrect submissions 
-                    and a scoreboard that updates in real-time. The top teams will advance to 
-                    regional finals, moving one step closer to the ICPC World Finals.
-                </p>
-                <p className="mt-2">
-                    Get ready to put your skills to the test and compete against the best 
-                    programmers in the region!
-                </p>
+                {ReactHtmlParser(contest.detail)}
             </div>
             <div className="my-4">
                 <div>Password: </div>
@@ -100,10 +162,10 @@ function ContestDetail() {
                     <DataTable 
                         className="px-4" 
                         customStyles={customStyles} 
-                        data={data} 
+                        data={problems} 
                         columns={problemColumns} 
                         pointerOnHover 
-                        onRowClicked={(row) => window.location.href = `/problem/${row.no}`} 
+                        onRowClicked={(row) => window.location.href = `/problem/${row.id}`} 
                     />
                 </div>
                 <div>

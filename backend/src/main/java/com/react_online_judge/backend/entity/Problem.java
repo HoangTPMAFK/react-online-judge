@@ -1,5 +1,6 @@
 package com.react_online_judge.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -37,7 +38,11 @@ public class Problem {
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Submission> submissions;
 
+    @OneToMany(mappedBy = "problem")
+    Set<SolvedProblem> sovledUsers;
+
     @ManyToMany(mappedBy = "problems")
+            @JsonIgnoreProperties("problems")
     Set<Contest> contests;
 
     Date created_at;

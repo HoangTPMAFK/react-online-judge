@@ -22,9 +22,6 @@ public class ProblemCreationRequest {
 
     boolean publicFlag;
 
-    @NotBlank
-    String author;
-
     @NotNull
     int timeLimit;
 

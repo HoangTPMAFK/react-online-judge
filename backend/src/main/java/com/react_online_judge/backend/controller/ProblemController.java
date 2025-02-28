@@ -27,6 +27,12 @@ public class ProblemController {
                 .data(problemService.getAllProblems())
                 .build();
     }
+    @GetMapping("/my-created-problem")
+    public APIResponse<List<ProblemResponse>> getMyCreatedProblems(@RequestHeader("Authorization") String token) {
+        return APIResponse.<List<ProblemResponse>>builder()
+                .data(problemService.getProblemsByCreator(token))
+                .build();
+    }
     @GetMapping("/public")
     public APIResponse<List<ProblemResponse>> getAllPublicProblems() {
         return APIResponse.<List<ProblemResponse>>builder()
@@ -34,20 +40,20 @@ public class ProblemController {
                 .build();
     }
     @PostMapping("/")
-    public APIResponse<ProblemResponse> createProblem(@RequestBody ProblemCreationRequest request) {
+    public APIResponse<ProblemResponse> createProblem(@RequestHeader("Authorization") String token, @RequestBody ProblemCreationRequest request) {
         return APIResponse.<ProblemResponse>builder()
-                .data(problemService.createProblem(request))
+                .data(problemService.createProblem(token, request))
                 .build();
     }
     @PutMapping("/{problemId}")
-    public APIResponse<ProblemResponse> updateProblem(@PathVariable Long problemId, @RequestBody ProblemUpdateRequest request) {
+    public APIResponse<ProblemResponse> updateProblem(@RequestHeader("Authorization") String token, @PathVariable Long problemId, @RequestBody ProblemUpdateRequest request) {
         return APIResponse.<ProblemResponse>builder()
-                .data(problemService.updateProblem(problemId, request))
+                .data(problemService.updateProblem(token, problemId, request))
                 .build();
     }
     @DeleteMapping("/{problemId}")
-    public APIResponse<ProblemResponse> deleteProblem(@PathVariable Long problemId) {
-        problemService.deleteProblem(problemId);
+    public APIResponse<ProblemResponse> deleteProblem(@RequestHeader("Authorization") String token, @PathVariable Long problemId) {
+        problemService.deleteProblem(token, problemId);
         return APIResponse.<ProblemResponse>builder()
                 .message("Problem deleted")
                 .build();

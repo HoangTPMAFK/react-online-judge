@@ -1,13 +1,14 @@
 package com.react_online_judge.backend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Data
+@Setter
+@Getter
 @Entity
 @Builder
 @NoArgsConstructor
@@ -15,6 +16,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ContestParticipator {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
 
     @ManyToOne
@@ -26,4 +28,12 @@ public class ContestParticipator {
     Contest contest;
 
     int point;
+
+    @Override
+    public String toString() {
+        return "ContestParticipator{" +
+                "id=" + id +
+                ", userId=" + user.getId() +
+                '}';
+    }
 }

@@ -12,9 +12,10 @@ import com.react_online_judge.backend.dto.response.IntrospectReponse;
 import com.react_online_judge.backend.entity.*;
 import com.react_online_judge.backend.exception.AppException;
 import com.react_online_judge.backend.exception.ErrorCode;
+import com.react_online_judge.backend.mapper.UserMapper;
+import com.react_online_judge.backend.repository.InvalidTokenRepository;
 import com.react_online_judge.backend.repository.UserRepository;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,6 +31,8 @@ import java.util.*;
 @Service
 public class AuthenticateService {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final InvalidTokenRepository invalidTokenRepository;
 
     @Value("${jwt.secret-key}")
     private String SECRET_KEY;
@@ -56,14 +59,32 @@ public class AuthenticateService {
         String token = request.getToken();
         try {
             var jwtToken = verifiedToken(token, false);
+            String jit = jwtToken.getJWTClaimsSet().getJWTID();
+            InvalidToken invalidToken = invalidTokenRepository.findById(jit).orElse(null);
+            if (invalidToken != null) {
+                return IntrospectReponse.builder()
+                        .valid(false)
+                        .build();
+            }
             return IntrospectReponse.builder()
                     .valid(true)
+                    .account(userMapper.toUserResponse(getUserFromToken(token)))
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
             return IntrospectReponse.builder()
                     .valid(false)
                     .build();
+        }
+    }
+    public void logout(String token) throws ParseException, JOSEException {
+        try {
+            var signedToken = verifiedToken(token, false);
+            String jit = signedToken.getJWTClaimsSet().getJWTID();
+            Date expirationDate = signedToken.getJWTClaimsSet().getExpirationTime();
+            invalidTokenRepository.save(InvalidToken.builder().id(jit).expirationTime(expirationDate).build());
+        } catch (AppException e) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
         }
     }
     public String generateToken(User user) {
@@ -90,9 +111,24 @@ public class AuthenticateService {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
     }
-    public SignedJWT verifiedToken(String token, boolean isRefresh) throws ParseException, JOSEException {
+    public User getUserFromToken(String token) throws ParseException, JOSEException {
+        log.info("getUserFromToken: {}", token);
+        SignedJWT signedJWT = SignedJWT.parse(token.replace("Bearer ", ""));
         JWSVerifier verifier = new MACVerifier(SECRET_KEY.getBytes());
-        SignedJWT signedJWT = SignedJWT.parse(token);
+        if (!signedJWT.verify(verifier)) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+        String username = signedJWT.getJWTClaimsSet().getSubject();
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return user;
+    }
+
+    public SignedJWT verifiedToken(String token, boolean isRefresh) throws ParseException, JOSEException {
+        if (token == null || token.isEmpty()) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+        JWSVerifier verifier = new MACVerifier(SECRET_KEY.getBytes());
+        SignedJWT signedJWT = SignedJWT.parse(token.replace("Bearer ", ""));
         Date expiration = (isRefresh) ?
                 new Date(signedJWT.getJWTClaimsSet().getIssueTime().toInstant().plusSeconds((86400 + 3600)).toEpochMilli()) :
                 signedJWT.getJWTClaimsSet().getExpirationTime();

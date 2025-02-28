@@ -1,17 +1,21 @@
 package com.react_online_judge.backend.controller;
 
+import com.nimbusds.jose.JOSEException;
 import com.react_online_judge.backend.dto.request.ContestCreationRequest;
 import com.react_online_judge.backend.dto.request.ContestUpdateRequest;
 import com.react_online_judge.backend.dto.response.APIResponse;
 import com.react_online_judge.backend.dto.response.ContestResponse;
 import com.react_online_judge.backend.dto.response.ProblemResponse;
 import com.react_online_judge.backend.dto.response.UserResponse;
+import com.react_online_judge.backend.exception.AppException;
+import com.react_online_judge.backend.exception.ErrorCode;
 import com.react_online_judge.backend.service.ContestService;
 import com.react_online_judge.backend.service.ProblemService;
 import com.react_online_judge.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -35,20 +39,26 @@ public class ContestController {
                 .data(contestService.getContestById(contestId))
                 .build();
     }
-    @PostMapping("/")
-    public APIResponse<ContestResponse> createContest(@RequestBody ContestCreationRequest request) {
+    @PostMapping("/{contestId}/join")
+    public APIResponse<ContestResponse> joinContest(@PathVariable Long contestId, @RequestHeader("Authorization") String token) throws ParseException, JOSEException {
         return APIResponse.<ContestResponse>builder()
-                .data(contestService.createContest(request))
+                .data(contestService.joinContest(contestId, token))
+                .build();
+    }
+    @PostMapping("/")
+    public APIResponse<ContestResponse> createContest(@RequestHeader("Authorization") String token, @RequestBody ContestCreationRequest request) {
+        return APIResponse.<ContestResponse>builder()
+                .data(contestService.createContest(token, request))
                 .build();
     }
     @PutMapping("/{contestId}")
-    public APIResponse<ContestResponse> updateContest(@PathVariable Long contestId, @RequestBody ContestUpdateRequest request) {
+    public APIResponse<ContestResponse> updateContest(@RequestHeader("Authorization") String token, @PathVariable Long contestId, @RequestBody ContestUpdateRequest request) {
         return APIResponse.<ContestResponse>builder()
-                .data(contestService.updateContest(contestId, request))
+                .data(contestService.updateContest(token, contestId, request))
                 .build();
     }
     @DeleteMapping("/{contestId}/")
-    public APIResponse<ContestResponse> deleteContest(@PathVariable Long contestId) {
+    public APIResponse<ContestResponse> deleteContest(@RequestHeader("Authorization") String token, @PathVariable Long contestId) {
         contestService.deleteContest(contestId);
         return APIResponse.<ContestResponse>builder()
                 .message("Contest successfully deleted")
@@ -61,15 +71,15 @@ public class ContestController {
                 .build();
     }
     @GetMapping("/user/{contestId}")
-    public APIResponse<List<UserResponse>> getContestUser(@PathVariable Long contestId) {
+    public APIResponse<List<UserResponse>> getParticipators(@PathVariable Long contestId) {
         return APIResponse.<List<UserResponse>>builder()
                 .data(userService.getParticipators(contestId))
                 .build();
     }
     @GetMapping("/my-created-contests/{userId}")
-    public APIResponse<List<ContestResponse>> getMyCreatedContests(@PathVariable Long userId) {
+    public APIResponse<List<ContestResponse>> getMyCreatedContests(@RequestHeader("Authorization") String token, @PathVariable Long userId) {
         return APIResponse.<List<ContestResponse>>builder()
-                .data(contestService.getMyCreatedContests(userId))
+                .data(contestService.getMyCreatedContests(token, userId))
                 .build();
     }
 }

@@ -13,6 +13,6 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
     @Query("SELECT p FROM Problem p JOIN p.contests c WHERE c.id = :contestId")
     List<Problem> findByContestId(@Param("contestId") Long contestId);
     List<Problem> findAllByPublicFlag(boolean isPublic);
-//    List<Problem> findAllByPublicIs(boolean isPublic);
+    List<Problem> findAllByAuthor(String author);
     void deleteById(Long id);
 }

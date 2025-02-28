@@ -1,6 +1,8 @@
 package com.react_online_judge.backend.dto.response;
 
-import com.react_online_judge.backend.entity.Problem;
+import com.react_online_judge.backend.dto.common.ContestParticipatorDTO;
+import com.react_online_judge.backend.dto.common.ProblemDTO;
+import com.react_online_judge.backend.entity.ContestParticipator;
 import com.react_online_judge.backend.entity.User;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -19,7 +21,7 @@ public class ContestResponse {
     String password; // Null if public
     LocalDateTime startAt;
     LocalDateTime endAt;
-    Set<Problem> problems;
-    Set<User> participatedUsers;
+    Set<ProblemDTO> problems;
+    Set<ContestParticipatorDTO> contestParticipators;
     String detail;
 }

@@ -3,10 +3,51 @@ import { ArcElement, Tooltip, Legend, Chart as ChartJS } from "chart.js"; // Imp
 import { Pie } from "react-chartjs-2";
 import ReactCodeMirror from "@uiw/react-codemirror";
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function ProblemDetail() {
+  const [problem, setProblem] = useState(Object);
+  const { id } = useParams();
+  
+  const [sampleInputOutput, setSampleInputOutput] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/contest-programing/api/problem/${id}`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const jsonData = await response.json();
+        setProblem(jsonData.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  }, [id]);
+
+  useEffect(() => {
+    if (problem?.sampleInputOutput) {
+      try {
+        const sampleInputOutputJson = JSON.parse(problem.sampleInputOutput);
+        const formattedData = sampleInputOutputJson.input.map((input, i) => ({
+          input,
+          output: sampleInputOutputJson.output[i],
+        }));
+        setSampleInputOutput(formattedData);
+      } catch (error) {
+        console.error("Error parsing JSON:", error);
+      }
+    }
+  }, [problem]);
+  console.log(JSON.stringify(sampleInputOutput));
+  console.log("http://localhost:8080/contest-programing/api/problem/"+id);
+  if (problem.hasOwnProperty("title")) console.log(problem);
   const pieData = {
     labels: ["Success", "Failure"],
     datasets: [
@@ -26,17 +67,12 @@ function ProblemDetail() {
     <>
       <div className="grid grid-cols-5">
         <div className="col-span-4 bg-white shadow-sm m-4">
-          <div className="text-3xl text-slate-700 p-4">Problem A</div>
+          <div className="text-3xl text-slate-700 p-4">{problem.title}</div>
           <div>
             <div className="px-4 py-2">
               <div className="text-2xl text-cyan-600">Problem Statement</div>
               <div className="text-lg text-slate-800 pl-12">
-                <p>Hãy tính tổng của hai số nguyên và đưa ra kết quả.</p>
-                <p>
-                  Hãy cẩn thận không để xuất ra thông tin không cần thiết, chẳng
-                  hạn như "Vui lòng nhập giá trị của a và b: ". Xem phần ẩn để
-                  biết mã mẫu.
-                </p>
+                {problem.statement}
               </div>
             </div>
           </div>
@@ -44,7 +80,7 @@ function ProblemDetail() {
             <div className="px-4 py-2">
               <div className="text-2xl text-cyan-600">Input</div>
               <div className="text-lg text-slate-800 pl-12">
-                <p>Hai số nguyên được phân cách bằng dấu cách.</p>
+                <p>{problem.input}</p>
               </div>
             </div>
           </div>
@@ -52,23 +88,26 @@ function ProblemDetail() {
             <div className="px-4">
               <div className="text-2xl text-cyan-600">Output</div>
               <div className="text-lg text-slate-800 pl-12">
-                <p>Tổng của hai số.</p>
+                <p>{problem.output}</p>
               </div>
             </div>
           </div>
 
           <div>
-            <div className="grid grid-cols-2 mb-2">
-              <div className="mx-4 my-2">
-                <div className="text-2xl text-cyan-600">Sample input 1</div>
-                <code className="text-lg bg-gray-50 px-2 border flex">4 5</code>
+            {sampleInputOutput.map((row, i) => (
+              <div key={i} className="grid grid-cols-2 mb-2">
+                <div className="mx-4 my-2">
+                  <div className="text-2xl text-cyan-600">Sample input {i + 1}</div>
+                  <code className="text-lg bg-gray-50 px-2 border flex">{row.input}</code>
+                </div>
+                <div className="mx-4 my-2">
+                  <div className="text-2xl text-cyan-600">Sample output {i + 1}</div>
+                  <code className="text-lg bg-gray-50 px-2 border flex">{row.output}</code>
+                </div>
               </div>
-              <div className="mx-4 my-2">
-                <div className="text-2xl text-cyan-600">Sample output 1</div>
-                <code className="text-lg bg-gray-50 px-2 border flex">9</code>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 mb-2">
+            ))}
+            
+            {/* <div className="grid grid-cols-2 mb-2">
               <div className="mx-4 my-2">
                 <div className="text-2xl text-cyan-600">Sample input 2</div>
                 <code className="text-lg bg-gray-50 px-2 border flex">
@@ -79,7 +118,7 @@ function ProblemDetail() {
                 <div className="text-2xl text-cyan-600">Sample output 2</div>
                 <code className="text-lg bg-gray-50 px-2 border flex">19</code>
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="bg-slate-50 h-10"></div>
           <div>

@@ -1,12 +1,16 @@
 package com.react_online_judge.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -19,8 +23,10 @@ public class Contest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-    @Column(nullable = false, unique = true)
+    @Lob
+    @Column(nullable = false, unique = true, columnDefinition = "LONGTEXT")
     String title;
+    @Column(nullable = false)
     long creatorId;
     String password; // Null if public
     LocalDateTime startAt;
@@ -33,8 +39,8 @@ public class Contest {
     )
     Set<Problem> problems;
 
-    @OneToMany(mappedBy = "contest")
-    Set<ContestParticipator> contestParticipators;
+    @OneToMany(mappedBy = "contest", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    Set<ContestParticipator> contestParticipators = new HashSet<>();
 
     String detail;
     LocalDateTime createAt;

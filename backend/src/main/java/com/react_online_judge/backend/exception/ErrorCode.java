@@ -16,8 +16,11 @@ public enum ErrorCode {
     CONTEST_EXISTED(403, "Contest existed", HttpStatus.BAD_REQUEST),
     ROLE_EXISTED(404, "Role existed", HttpStatus.BAD_REQUEST),
     PERMISSION_EXISTED(405, "Permission existed", HttpStatus.BAD_REQUEST),
+    ALREADY_JOINED(406, "You already joined the contest", HttpStatus.BAD_REQUEST),
+    INVALID_PASSWORD(407, "Invalid password", HttpStatus.BAD_REQUEST),
     UNAUTHORIZED(201, "You don't have permission", HttpStatus.FORBIDDEN),
     UNAUTHENTICATED(202, "Unauthenticated", HttpStatus.UNAUTHORIZED),
+    WRONG_PASSWORD(203, "Wrong password", HttpStatus.BAD_REQUEST),
     UNCATEGORIZED(501, "Uncategorized exception", HttpStatus.INTERNAL_SERVER_ERROR),
     ;
     private int code;

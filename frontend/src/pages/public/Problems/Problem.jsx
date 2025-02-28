@@ -1,31 +1,35 @@
 import DataTable from "react-data-table-component";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { color } from "@uiw/react-codemirror";
+import { Link } from "react-router-dom";
 
 function Problems() {
   const searchStr = useRef("");
 
+  
+
   const columns = [
     {
       name: "#",
-      selector: (row) => row.no,
+      selector: (row) => row.id,
       sortable: true,
     },
     {
       name: "Title",
-      selector: (row) => row.title,
+      selector: (row) => 
+        <Link to={`/problem/${row.id}`}>{row.title}</Link>,
       sortable: true,
     },
     {
-      name: "Difficulty",
-      selector: (row) => row.difficulty,
+      name: "Difficult",
+      selector: (row) => row.difficult,
       sortable: true,
     },
-    {
-      name: "Success Rate",
-      selector: (row) => row.success_rate,
-      sortable: true,
-    },
+    // {
+    //   name: "Success Rate",
+    //   selector: (row) => row.success_rate,
+    //   sortable: true,
+    // },
     {
       name: "Point",
       selector: (row) => row.point,
@@ -33,80 +37,26 @@ function Problems() {
     },
   ];
 
-  const [data, setData] = useState([
-    {
-      no: 1,
-      title: "Problem A",
-      difficulty: "Easy",
-      success_rate: 75,
-      point: 100,
-    },
-    {
-      no: 2,
-      title: "Problem B",
-      difficulty: "Medium",
-      success_rate: 60,
-      point: 200,
-    },
-    {
-      no: 3,
-      title: "Problem C",
-      difficulty: "Hard",
-      success_rate: 40,
-      point: 300,
-    },
-    {
-      no: 4,
-      title: "Problem D",
-      difficulty: "Easy",
-      success_rate: 80,
-      point: 100,
-    },
-    {
-      no: 5,
-      title: "Problem E",
-      difficulty: "Medium",
-      success_rate: 55,
-      point: 200,
-    },
-    {
-      no: 6,
-      title: "Problem F",
-      difficulty: "Hard",
-      success_rate: 35,
-      point: 300,
-    },
-    {
-      no: 7,
-      title: "Problem G",
-      difficulty: "Easy",
-      success_rate: 85,
-      point: 100,
-    },
-    {
-      no: 8,
-      title: "Problem H",
-      difficulty: "Medium",
-      success_rate: 50,
-      point: 200,
-    },
-    {
-      no: 9,
-      title: "Problem I",
-      difficulty: "Hard",
-      success_rate: 30,
-      point: 300,
-    },
-    {
-      no: 10,
-      title: "Problem J",
-      difficulty: "Easy",
-      success_rate: 90,
-      point: 100,
-    },
-  ]);
-
-  const [filteredData, setFilteredData] = useState(data);
+  const [fetchedData, setFetchedData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch("http://localhost:8080/contest-programing/api/problem/public");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}. ${response.message}`);
+        }
+        const jsonData = await response.json(); // Chờ dữ liệu chuyển thành JSON
+        setFetchedData(jsonData.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  }, []);
+  useEffect(() => {
+    setFilteredData(fetchedData);
+  }, [fetchedData])
 
   const customStyles = {
     headRow: {
@@ -169,7 +119,7 @@ function Problems() {
         highlightOnHover
         pointerOnHover
         striped
-        onRowClicked={(row) => (window.location.href = `/problem/${row.no}`)}
+        onRowClicked={(row) => (window.location.href = `/problem/${row.id}`)}
         customStyles={customStyles}
       />
     </div>

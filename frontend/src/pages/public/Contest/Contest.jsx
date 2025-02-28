@@ -1,13 +1,8 @@
 import DataTable from "react-data-table-component";
-import { useState } from "react";
-import {
-  Hourglass,
-  CheckCircle,
-  Clock,
-  Calendar,
-  TrophyIcon,
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import { Hourglass, CheckCircle, Clock, Calendar, TrophyIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+
 const statusIcons = {
   Underway: <Hourglass className="w-4 h-4 text-yellow-500" />,
   Ended: <CheckCircle className="w-4 h-4 text-red-500" />,
@@ -23,157 +18,138 @@ const statusColors = {
 function Contests() {
   const [searchStr, setSearchStr] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-  const [data] = useState([
-    {
-      no: 1,
-      title: "2024 ACM Qualifier Round 2",
-      date: "2024-9-26 13:00",
-      duration: "16 days",
-      status: "Underway",
-    },
-    {
-      no: 2,
-      title: "2024 ACM Qualifier",
-      date: "2024-9-19 13:00",
-      duration: "7 days",
-      status: "Ended",
-    },
-    {
-      no: 3,
-      title: "University Programming Contest",
-      date: "2024-3-9 12:30",
-      duration: "4 hours",
-      status: "Ended",
-    },
-    {
-      no: 4,
-      title: "QDU 2023 ACM Training",
-      date: "2023-12-3 16:20",
-      duration: "5 hours",
-      status: "Ended",
-    },
-    {
-      no: 5,
-      title: "2024 ACM Qualifier Round 2",
-      date: "2024-9-26 13:00",
-      duration: "16 days",
-      status: "Underway",
-    },
-    {
-      no: 1,
-      title: "2024 ACM Qualifier Round 2",
-      date: "2024-9-26 13:00",
-      duration: "16 days",
-      status: "Underway",
-    },
-    {
-      no: 2,
-      title: "2024 ACM Qualifier",
-      date: "2024-9-19 13:00",
-      duration: "7 days",
-      status: "Ended",
-    },
-    {
-      no: 3,
-      title: "University Programming Contest",
-      date: "2024-3-9 12:30",
-      duration: "4 hours",
-      status: "Ended",
-    },
-    {
-      no: 4,
-      title: "QDU 2023 ACM Training",
-      date: "2023-12-3 16:20",
-      duration: "5 hours",
-      status: "Ended",
-    },
-    {
-      no: 5,
-      title: "2024 ACM Qualifier Round 2",
-      date: "2024-9-26 13:00",
-      duration: "16 days",
-      status: "Underway",
-    },
-    {
-      no: 1,
-      title: "2024 ACM Qualifier Round 2",
-      date: "2024-9-26 13:00",
-      duration: "16 days",
-      status: "Underway",
-    },
-    {
-      no: 2,
-      title: "2024 ACM Qualifier",
-      date: "2024-9-19 13:00",
-      duration: "7 days",
-      status: "Ended",
-    },
-    {
-      no: 3,
-      title: "University Programming Contest",
-      date: "2024-3-9 12:30",
-      duration: "4 hours",
-      status: "Ended",
-    },
-    {
-      no: 4,
-      title: "QDU 2023 ACM Training",
-      date: "2023-12-3 16:20",
-      duration: "5 hours",
-      status: "Ended",
-    },
-    {
-      no: 5,
-      title: "2024 ACM Qualifier Round 2",
-      date: "2024-9-26 13:00",
-      duration: "16 days",
-      status: "Underway",
-    },
-  ]);
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
 
-  const filteredData = data.filter(
-    (item) =>
-      (statusFilter === "All" || item.status === statusFilter) &&
-      item.title.toLowerCase().includes(searchStr.toLowerCase())
-  );
+  // Fetch data from API
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch("http://localhost:8080/contest-programing/api/contest/");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const jsonData = await response.json();
+        setData(jsonData.data || []);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  // Apply search & filter
+  useEffect(() => {
+    setFilteredData(
+      data.filter((item) => {
+        // Convert `startAt` and `endAt` into Date objects
+        const startTime = new Date(item.startAt[0], item.startAt[1] - 1, item.startAt[2], item.startAt[3], item.startAt[4], item.startAt[5]);
+        const endTime = new Date(item.endAt[0], item.endAt[1] - 1, item.endAt[2], item.endAt[3], item.endAt[4], item.endAt[5]);
+        const currentTime = new Date();
+  
+        // Determine actual status
+        let calculatedStatus = "Not_Started"; // Default status
+        if (currentTime >= startTime && currentTime < endTime) {
+          calculatedStatus = "Underway";
+        } else if (currentTime >= endTime) {
+          calculatedStatus = "Ended";
+        }
+  
+        // Filter by search & status
+        return (
+          (statusFilter === "All" || calculatedStatus === statusFilter) &&
+          item.title.toLowerCase().includes(searchStr.toLowerCase())
+        );
+      })
+    );
+  }, [data, searchStr, statusFilter]);
+  
+  console.log(data);
 
   const columns = [
     {
       name: "Contest Info",
       selector: (row) => row.title,
       sortable: true,
-      cell: (row) => (
-        <Link>
-          <div className="flex items-center gap-4">
+      grow: 2, // Make this column take more space
+      cell: (row) => {
+        const contestDate = new Date(
+          row.startAt[0], // Year
+          row.startAt[1] - 1, // Month (0-based in JS)
+          row.startAt[2], // Day
+          row.startAt[3] || 0, // Hour (optional)
+          row.startAt[4] || 0, // Minute (optional)
+          row.startAt[5] || 0 // Second (optional)
+        );
+  
+        return (
+          <Link to={`/contest/${row.id}`} className="flex items-center gap-4 w-full">
             <TrophyIcon className="text-yellow-400" size={42} />
-            <div>
+            <div className="flex-1">
               <div className="text-lg font-semibold">{row.title}</div>
               <div className="text-sm text-gray-600 flex items-center gap-2">
-                <Calendar className="w-4 h-4" /> {row.date} • {row.duration}
+                <Calendar className="w-4 h-4" />
+                {contestDate.toLocaleString()} {/* Formats date nicely */}
               </div>
             </div>
-          </div>
-        </Link>
-      ),
+          </Link>
+        );
+      },
     },
     {
       name: "Status",
-      selector: (row) => row.status,
+      selector: (row) => row.status || "UNKNOWN",
       sortable: true,
+      grow: 1, // Make this column smaller than "Contest Info"
       right: true,
-      cell: (row) => (
-        <div
-          className={`flex items-center gap-2 px-3 py-1 border ${
-            statusColors[row.status]
-          }`}
-        >
-          {statusIcons[row.status]}
-          <span className="text-sm font-medium">
-            {row.status.replace("_", " ")}
-          </span>
-        </div>
-      ),
-    },
+      cell: (row) => {
+        // Convert `startAt` and `endAt` from array to Date objects
+        const startTime = new Date(row.startAt[0], row.startAt[1] - 1, row.startAt[2], row.startAt[3], row.startAt[4], row.startAt[5]);
+        const endTime = new Date(row.endAt[0], row.endAt[1] - 1, row.endAt[2], row.endAt[3], row.endAt[4], row.endAt[5]);
+        const currentTime = new Date();
+    
+        // Determine contest status based on time
+        let finalStatus = "NOT_STARTED"; // Default
+        if (currentTime >= startTime && currentTime < endTime) {
+          finalStatus = "UNDERWAY";
+        } else if (currentTime >= endTime) {
+          finalStatus = "ENDED";
+        }
+    
+        // Define readable status labels
+        const statusLabels = {
+          UNDERWAY: "Underway",
+          NOT_STARTED: "Not Started",
+          ENDED: "Ended",
+        };
+    
+        // Define colors
+        const statusColors = {
+          UNDERWAY: "bg-yellow-100 text-yellow-700 border-yellow-500",
+          NOT_STARTED: "bg-blue-100 text-blue-700 border-blue-500",
+          ENDED: "bg-red-100 text-red-700 border-red-500",
+        };
+    
+        // Define icons
+        const statusIcons = {
+          UNDERWAY: <Hourglass className="w-4 h-4 text-yellow-500" />,
+          NOT_STARTED: <Clock className="w-4 h-4 text-blue-500" />,
+          ENDED: <CheckCircle className="w-4 h-4 text-red-500" />,
+        };
+    
+        return (
+          <div
+            className={`flex items-center gap-2 px-3 py-1 border ${
+              statusColors[finalStatus]
+            }`}
+          >
+            {statusIcons[finalStatus]}
+            <span className="text-sm font-medium">{statusLabels[finalStatus]}</span>
+          </div>
+        );
+      },
+    }
+    
   ];
 
   return (
@@ -223,7 +199,7 @@ function Contests() {
           cells: { style: { paddingLeft: "12px", paddingRight: "12px" } },
           rows: { style: { minHeight: "48px" } },
         }}
-        onRowClicked={(row) => window.location.href = `/contest/${row.no}`}
+        onRowClicked={(row) => (window.location.href = `/contest/${row.id}`)}
       />
     </div>
   );
