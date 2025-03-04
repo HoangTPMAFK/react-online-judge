@@ -1,6 +1,12 @@
 import DataTable from "react-data-table-component";
 import { useEffect, useState } from "react";
-import { Hourglass, CheckCircle, Clock, Calendar, TrophyIcon } from "lucide-react";
+import {
+  Hourglass,
+  CheckCircle,
+  Clock,
+  Calendar,
+  TrophyIcon,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 const statusIcons = {
@@ -16,16 +22,18 @@ const statusColors = {
 };
 
 function Contests() {
-  const [searchStr, setSearchStr] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const [searchStr, setSearchStr] = useState("");
 
   // Fetch data from API
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("http://localhost:8080/contest-programing/api/contest/");
+        const response = await fetch(
+          "http://localhost:8080/contest-programing/api/contest/"
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -43,10 +51,24 @@ function Contests() {
     setFilteredData(
       data.filter((item) => {
         // Convert `startAt` and `endAt` into Date objects
-        const startTime = new Date(item.startAt[0], item.startAt[1] - 1, item.startAt[2], item.startAt[3], item.startAt[4], item.startAt[5]);
-        const endTime = new Date(item.endAt[0], item.endAt[1] - 1, item.endAt[2], item.endAt[3], item.endAt[4], item.endAt[5]);
+        const startTime = new Date(
+          item.startAt[0],
+          item.startAt[1] - 1,
+          item.startAt[2],
+          item.startAt[3],
+          item.startAt[4],
+          item.startAt[5]
+        );
+        const endTime = new Date(
+          item.endAt[0],
+          item.endAt[1] - 1,
+          item.endAt[2],
+          item.endAt[3],
+          item.endAt[4],
+          item.endAt[5]
+        );
         const currentTime = new Date();
-  
+
         // Determine actual status
         let calculatedStatus = "Not_Started"; // Default status
         if (currentTime >= startTime && currentTime < endTime) {
@@ -54,7 +76,7 @@ function Contests() {
         } else if (currentTime >= endTime) {
           calculatedStatus = "Ended";
         }
-  
+
         // Filter by search & status
         return (
           (statusFilter === "All" || calculatedStatus === statusFilter) &&
@@ -63,7 +85,7 @@ function Contests() {
       })
     );
   }, [data, searchStr, statusFilter]);
-  
+
   console.log(data);
 
   const columns = [
@@ -81,9 +103,12 @@ function Contests() {
           row.startAt[4] || 0, // Minute (optional)
           row.startAt[5] || 0 // Second (optional)
         );
-  
+
         return (
-          <Link to={`/contest/${row.id}`} className="flex items-center gap-4 w-full">
+          <Link
+            to={`/contest/${row.id}`}
+            className="flex items-center gap-4 w-full"
+          >
             <TrophyIcon className="text-yellow-400" size={42} />
             <div className="flex-1">
               <div className="text-lg font-semibold">{row.title}</div>
@@ -104,10 +129,24 @@ function Contests() {
       right: true,
       cell: (row) => {
         // Convert `startAt` and `endAt` from array to Date objects
-        const startTime = new Date(row.startAt[0], row.startAt[1] - 1, row.startAt[2], row.startAt[3], row.startAt[4], row.startAt[5]);
-        const endTime = new Date(row.endAt[0], row.endAt[1] - 1, row.endAt[2], row.endAt[3], row.endAt[4], row.endAt[5]);
+        const startTime = new Date(
+          row.startAt[0],
+          row.startAt[1] - 1,
+          row.startAt[2],
+          row.startAt[3],
+          row.startAt[4],
+          row.startAt[5]
+        );
+        const endTime = new Date(
+          row.endAt[0],
+          row.endAt[1] - 1,
+          row.endAt[2],
+          row.endAt[3],
+          row.endAt[4],
+          row.endAt[5]
+        );
         const currentTime = new Date();
-    
+
         // Determine contest status based on time
         let finalStatus = "NOT_STARTED"; // Default
         if (currentTime >= startTime && currentTime < endTime) {
@@ -115,40 +154,40 @@ function Contests() {
         } else if (currentTime >= endTime) {
           finalStatus = "ENDED";
         }
-    
+
         // Define readable status labels
         const statusLabels = {
           UNDERWAY: "Underway",
           NOT_STARTED: "Not Started",
           ENDED: "Ended",
         };
-    
+
         // Define colors
         const statusColors = {
           UNDERWAY: "bg-yellow-100 text-yellow-700 border-yellow-500",
           NOT_STARTED: "bg-blue-100 text-blue-700 border-blue-500",
           ENDED: "bg-red-100 text-red-700 border-red-500",
         };
-    
+
         // Define icons
         const statusIcons = {
           UNDERWAY: <Hourglass className="w-4 h-4 text-yellow-500" />,
           NOT_STARTED: <Clock className="w-4 h-4 text-blue-500" />,
           ENDED: <CheckCircle className="w-4 h-4 text-red-500" />,
         };
-    
+
         return (
           <div
-            className={`flex items-center gap-2 px-3 py-1 border ${
-              statusColors[finalStatus]
-            }`}
+            className={`flex items-center gap-2 px-3 py-1 border ${statusColors[finalStatus]}`}
           >
             {statusIcons[finalStatus]}
-            <span className="text-sm font-medium">{statusLabels[finalStatus]}</span>
+            <span className="text-sm font-medium">
+              {statusLabels[finalStatus]}
+            </span>
           </div>
         );
       },
-    }
+    },
   ];
 
   return (
