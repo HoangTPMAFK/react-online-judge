@@ -9,12 +9,25 @@ import Login from "./Login/Login";
 import ContestDetail from "./Contest/ContestDetail";
 import User from "./User/User";
 import Account from "./Login/Account";
+// import NotFound from "./NotFound/NotFound";
 import { FaTrophy } from "react-icons/fa";
 import { FaRankingStar } from "react-icons/fa6";
 import { MdBarChart } from "react-icons/md";
 import { LuTableProperties } from "react-icons/lu";
 import { IoMdHome } from "react-icons/io";
 import { useEffect, useState } from "react";
+
+function NotFound() {
+  return (
+    <div className="text-center py-20">
+      <h1 className="text-4xl font-bold">404 - Page Not Found</h1>
+      <p className="text-lg">Oops! Trang bạn tìm kiếm không tồn tại.</p>
+      <Link to="/" className="text-blue-500 underline">
+        Quay về trang chủ
+      </Link>
+    </div>
+  );
+}
 
 function Public() {
   function getCookie(name) {
@@ -112,7 +125,10 @@ function Public() {
 
         {/* ✅ Hiển thị thông tin tài khoản nếu đã đăng nhập */}
         {account ? (
-          <div className="flex items-center space-x-2 hover:cursor-pointer" onClick={() => window.location.href = "/account"}>
+          <div
+            className="flex items-center space-x-2 hover:cursor-pointer"
+            onClick={() => (window.location.href = "/account")}
+          >
             <img
               src={account.avatar}
               className="h-10 w-10 rounded-full"
@@ -154,6 +170,7 @@ function Public() {
             <Route path="login" element={<Login />} />
             <Route path="user/:id" element={<User />} />
             <Route path="account" element={<Account />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
       </div>

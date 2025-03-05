@@ -8,7 +8,7 @@ import NotFound from "./pages/NotFound";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Public />} />
+      <Route path="/*" element={<Public />} />
       <Route path="/admin/*" element={<Admin />} />
       <Route path="/superadmin/*" element={<Superadmin />} />
       <Route path="*" element={<NotFound />} />
