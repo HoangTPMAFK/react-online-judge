@@ -4,10 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import com.react_online_judge.backend.dto.request.ProblemCreationRequest;
 import com.react_online_judge.backend.dto.request.ProblemUpdateRequest;
 import com.react_online_judge.backend.dto.response.ProblemResponse;
-import com.react_online_judge.backend.entity.Announcement;
-import com.react_online_judge.backend.entity.Contest;
-import com.react_online_judge.backend.entity.Problem;
-import com.react_online_judge.backend.entity.User;
+import com.react_online_judge.backend.entity.*;
 import com.react_online_judge.backend.exception.AppException;
 import com.react_online_judge.backend.exception.ErrorCode;
 import com.react_online_judge.backend.mapper.ProblemMapper;
@@ -29,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -42,23 +40,40 @@ public class ProblemService {
     AuthenticateService authenticateService;
 
     @PreAuthorize("permitAll()")
-    public ProblemResponse getProblemById(Long id) {
-        Problem problem = problemRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PROBLEM_NOT_EXISTED));
-        if (problem.isPublicFlag()) {return problemMapper.toProblemResponse(problem);}
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        if (!auth.isAuthenticated() || "anonymousUser".equals(username)) {
+    public ProblemResponse getProblemById(String token, Long id) {
+        Problem problem = problemRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.PROBLEM_NOT_EXISTED));
+
+        if (problem.isPublicFlag()) {
+            return problemMapper.toProblemResponse(problem);
+        }
+
+        Set<Contest> problemContests = problem.getContests();
+        if (problemContests == null || problemContests.isEmpty()) {
             throw new AppException(ErrorCode.PROBLEM_NOT_EXISTED);
         }
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        Set<Contest> contests = new HashSet<>(problem.getContests());
-        user.getContestParticipators().forEach(cp -> contests.add(cp.getContest()));
-        boolean hasAccess = contests.stream().anyMatch(contest -> problem.getContests().contains(contest));
+
+        User user;
+        try {
+            user = authenticateService.getUserFromToken(token);
+        } catch (ParseException | JOSEException e) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+
+        Set<Contest> userContests = user.getContestParticipators().stream()
+                .map(ContestParticipator::getContest)
+                .collect(Collectors.toSet());
+
+        boolean hasAccess = userContests.stream().anyMatch(problemContests::contains);
+
         if (!hasAccess) {
             throw new AppException(ErrorCode.PROBLEM_NOT_EXISTED);
         }
+
         return problemMapper.toProblemResponse(problem);
     }
+
+    @PreAuthorize("permitAll()")
     public ProblemResponse getProblemByName(String title) {
         Problem problem = problemRepository.findByTitle(title).orElseThrow(() -> new AppException(ErrorCode.PROBLEM_NOT_EXISTED));
         return problemMapper.toProblemResponse(problem);
@@ -147,5 +162,15 @@ public class ProblemService {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
         problemRepository.deleteById(id);
+    }
+
+    public List<ProblemResponse> getProblemsByCreatorAndByTitle(String token, String name) {
+        try {
+            User user = authenticateService.getUserFromToken(token);
+            List<Problem> problems = problemRepository.findAllByAuthorAndTitleLike(user.getUsername(), name);
+            return problemMapper.toProblemResponseList(problems);
+        } catch (ParseException | JOSEException e) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
     }
 }

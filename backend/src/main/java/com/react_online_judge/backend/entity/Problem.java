@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -45,6 +46,6 @@ public class Problem {
             @JsonIgnoreProperties("problems")
     Set<Contest> contests;
 
-    Date created_at;
-    Date updated_at;
+    LocalDateTime created_at;
+    LocalDateTime updated_at;
 }

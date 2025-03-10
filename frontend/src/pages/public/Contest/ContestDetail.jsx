@@ -14,7 +14,7 @@ function ContestDetail() {
         }
         return null;
     }
-    const { id } = useParams();
+    const { id } = useParams("");
     const contestPassword = useRef(null);
     const problemColumns = [
         { name: "#", selector: row => row.id, sortable: true },

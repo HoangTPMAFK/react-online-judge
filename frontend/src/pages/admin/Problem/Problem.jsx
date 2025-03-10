@@ -1,12 +1,23 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DataTable from "react-data-table-component";
+import apiRequest from "../../../api/api";
 
 function Problem() {
     const searchInput = useRef(null)
+    const [problems, setProblems] = useState([])
+    useEffect(() => {
+        apiRequest(`problem/my-created-problems`, null, "GET")
+        .then((response) => {
+            setProblems(response.data)
+        })
+        .catch((error) => {
+            console.error("API Error:", error);
+        });
+    }, [])
     const columns = [
         {
             name: "#",
-            selector: row => row.no
+            selector: row => row.id
         },
         {
             name: "Title",
@@ -21,11 +32,11 @@ function Problem() {
             selector: row => 
         <div>
             <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 mr-2 rounded" 
-              onClick={() => {window.location.href = '/admin/problem/' + row.no}}>
+              onClick={() => {window.location.href = '/admin/problem/view/' + row.id}}>
                 View
             </button>
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-2 rounded" 
-              onClick={() => {window.location.href = '/admin/problem/' + row.no}}>
+              onClick={() => {window.location.href = '/admin/problem/edit/' + row.id}}>
                 Edit
             </button>
             <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
@@ -66,7 +77,6 @@ function Problem() {
         { no: 9, title: "Problem I", difficulty: "Hard", success_rate: 30, point: 300 },
         { no: 10, title: "Problem J", difficulty: "Easy", success_rate: 90, point: 100 },
     ]);
-    const [problems, setProblems] = useState(data)
     const customStyles = {
         headRow: {
             style: {

@@ -1,21 +1,35 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DataTable from "react-data-table-component";
+import apiRequest from "../../../api/api";
 
 function User() {
+  const [users, setUsers] = useState([])
+  useEffect(() => {
+    apiRequest("user/", null, "GET")
+    .then(
+      response => {
+        setUsers(response.data)
+        console.log(response)
+      }
+    )
+    .catch(
+      error => console.error(error)
+    )
+  }, [])
   const columns = [
     {
       name: 'ID',
-      selector: row => row.title,
+      selector: row => row.id,
       sortable: true,
     },
     {
       name: 'Username',
-      selector: row => row.start_date,
+      selector: row => row.username,
       sortable: true,
     },
     {
       name: 'Role',
-      selector: row => row.end_date,
+      selector: row => row.roles,
       sortable: true,
     },
     // {
@@ -28,11 +42,11 @@ function User() {
       cell: row => 
         <div className="flex md:flex-row flex-col">
             <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-3 mr-2 rounded" 
-              onClick={() => {window.location.href = '/superadmin/user/' + row.no}}>
+              onClick={() => {window.location.href = '/superadmin/user/view/' + row.id}}>
                 View
             </button>
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 mr-2 rounded" 
-              onClick={() => {window.location.href = '/superadmin/user/' + row.no}}>
+              onClick={() => {window.location.href = '/superadmin/user/edit/' + row.id}}>
                 Edit
             </button>
             <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-3 rounded">
@@ -42,120 +56,6 @@ function User() {
         ,
     },
   ]
-  const data = [
-    { 
-      no: 1, 
-      title: "2024 ACM Qualifier Round 2", 
-      start_date: "2024-09-26 13:00", 
-      end_date: "2024-10-12 13:00", 
-      status: "Underway" 
-    },
-    { 
-      no: 2, 
-      title: "2024 ACM Qualifier", 
-      start_date: "2024-09-19 13:00", 
-      end_date: "2024-09-26 13:00", 
-      status: "Ended" 
-    },
-    { 
-      no: 3, 
-      title: "University Programming Contest", 
-      start_date: "2024-03-09 12:30", 
-      end_date: "2024-03-09 16:30", 
-      status: "Ended" 
-    },
-    { 
-      no: 4, 
-      title: "QDU 2023 ACM Training", 
-      start_date: "2023-12-03 16:20", 
-      end_date: "2023-12-03 21:20", 
-      status: "Ended" 
-    },
-    { 
-      no: 5, 
-      title: "2024 ACM Qualifier Round 2", 
-      start_date: "2024-09-26 13:00", 
-      end_date: "2024-10-12 13:00", 
-      status: "Underway" 
-    },
-    { 
-      no: 6, 
-      title: "2024 ACM Qualifier", 
-      start_date: "2024-09-19 13:00", 
-      end_date: "2024-09-26 13:00", 
-      status: "Ended" 
-    },
-    { 
-      no: 7, 
-      title: "University Programming Contest", 
-      start_date: "2024-03-09 12:30", 
-      end_date: "2024-03-09 16:30", 
-      status: "Not Started" 
-    },
-    { 
-      no: 8, 
-      title: "QDU 2023 ACM Training", 
-      start_date: "2023-12-03 16:20", 
-      end_date: "2023-12-03 21:20", 
-      status: "Ended" 
-    },
-    { 
-      no: 9, 
-      title: "2024 ACM Qualifier Round 2", 
-      start_date: "2024-09-26 13:00", 
-      end_date: "2024-10-12 13:00", 
-      status: "Underway" 
-    },
-    { 
-      no: 10, 
-      title: "2024 ACM Qualifier", 
-      start_date: "2024-09-19 13:00", 
-      end_date: "2024-09-26 13:00", 
-      status: "Not Started" 
-    },
-    { 
-      no: 11, 
-      title: "University Programming Contest", 
-      start_date: "2024-03-09 12:30", 
-      end_date: "2024-03-09 16:30", 
-      status: "Ended" 
-    },
-    { 
-      no: 12, 
-      title: "QDU 2023 ACM Training", 
-      start_date: "2023-12-03 16:20", 
-      end_date: "2023-12-03 21:20", 
-      status: "Not Started" 
-    },
-    { 
-      no: 13, 
-      title: "2024 ACM Qualifier Round 2", 
-      start_date: "2024-09-26 13:00", 
-      end_date: "2024-10-12 13:00", 
-      status: "Underway" 
-    },
-    { 
-      no: 14, 
-      title: "2024 ACM Qualifier", 
-      start_date: "2024-09-19 13:00", 
-      end_date: "2024-09-26 13:00", 
-      status: "Ended" 
-    },
-    { 
-      no: 15, 
-      title: "University Programming Contest", 
-      start_date: "2024-03-09 12:30", 
-      end_date: "2024-03-09 16:30", 
-      status: "Underway" 
-    },
-    { 
-      no: 16, 
-      title: "QDU 2023 ACM Training", 
-      start_date: "2023-12-03 16:20", 
-      end_date: "2023-12-03 21:20", 
-      status: "Ended" 
-    }
-  ];
   const getDuration = (start, end) => {
     const startTime = new Date(start);
     const endTime = new Date(end);
@@ -192,8 +92,6 @@ function User() {
           },
       },
   };
-
-  var [contests, setContests] = useState(data);
   const searchInput = useRef(null);
   const handleSearch = () => {
     const keyword = searchInput.current.value;
@@ -209,7 +107,7 @@ function User() {
         </button>
         <input ref={searchInput} onInput={() => handleSearch()} type="text" placeholder="Search" className="border border-gray-400 p-2 rounded w-60" />
       </div>
-      <DataTable columns={columns} data={contests} pagination customStyles={customStyles}/>
+      <DataTable columns={columns} data={users} pagination customStyles={customStyles}/>
     </main>
   );
 }

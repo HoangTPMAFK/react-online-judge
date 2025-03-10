@@ -77,10 +77,10 @@ public class ContestController {
                 .data(userService.getParticipators(contestId))
                 .build();
     }
-    @GetMapping("/my-created-contests/{userId}")
-    public APIResponse<List<ContestResponse>> getMyCreatedContests(@RequestHeader("Authorization") String token, @PathVariable Long userId) {
+    @GetMapping("/my-created-contests")
+    public APIResponse<List<ContestResponse>> getMyCreatedContests(@RequestHeader("Authorization") String token) {
         return APIResponse.<List<ContestResponse>>builder()
-                .data(contestService.getMyCreatedContests(token, userId))
+                .data(contestService.getMyCreatedContests(token))
                 .build();
     }
 }

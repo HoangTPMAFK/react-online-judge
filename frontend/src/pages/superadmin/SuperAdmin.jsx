@@ -1,10 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Plus, Check, List } from 'lucide-react';
 import SuperAdminSideBar from '../../components/SuperAdminSideBar';
 import Dashboard from './Dashboard/Dashboard';
-import Form from './Form/Form';
-import Table from './Table/Table';
-import Tabs from './Tabs/Tabs';
 import { Route, Routes } from 'react-router-dom';
 import Contest from './Contest/Contest';
 import ContestDetail from './Contest/ContestDetail';
@@ -17,6 +14,9 @@ import SuperAdminAccount from './Login/SuperAdminAccount';
 import RolePermissionManager from './Role/RolePermissionManager';
 import PermissionManager from './Permission/PermissionManager';
 import { useState } from 'react';
+import apiRequest from '../../api/api';
+import { logout, authenticate, introspect } from "../../api/auth";
+
 
 const SuperAdmin = () => {
   const users = [
@@ -27,6 +27,11 @@ const SuperAdmin = () => {
   ].flatMap(user => [user, user]); 
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [account, setAccount] = useState([]);
+
+  useEffect(() => {
+      introspect(setAccount);
+  }, [])
 
   return (
     <div className="flex bg-gray-100 font-['Karla']">
@@ -63,16 +68,14 @@ const SuperAdmin = () => {
         <div className="w-full h-screen overflow-x-hidden border-t flex flex-col">
             <Routes>
                 <Route path="/" element={<Dashboard  />} />
-                <Route path="/form/" element={<Form />} />
-                <Route path="/table/" element={<Table   />} />
-                <Route path="/tab/" element={<Tabs />} />
                 <Route path="/contest/" element={<Contest />} />
                 <Route path="/contest/1" element={<ContestDetail />} />
                 <Route path="/problem/" element={<Problem />} />
                 <Route path="/problem/1" element={<ProblemDetail />} />
-                <Route path="/User" element={<User />} />
-                <Route path="/User/1" element={<UserDetail />} />
-                <Route path="/account/" element={<SuperAdminAccount />} />
+                <Route path="/user" element={<User />} />
+                <Route path="/user/view/:id" element={<UserDetail />} />
+                <Route path="/user/edit/:id" element={<UserDetail edit={true} />} />
+                <Route path="/account/" element={<SuperAdminAccount key={JSON.stringify(account)} accountInfo={account} />} />
                 <Route path="/role/" element={<RolePermissionManager />} />
                 <Route path="/permission/" element={<PermissionManager />} />
             </Routes>

@@ -3,6 +3,7 @@ package com.react_online_judge.backend.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -22,5 +23,5 @@ public class ProblemUpdateRequest {
     String output;
     String sampleInputOutput;
     String hiddenInputOutput;// JSON string
-    Date update_at;
+    LocalDateTime updateAt = LocalDateTime.now();
 }

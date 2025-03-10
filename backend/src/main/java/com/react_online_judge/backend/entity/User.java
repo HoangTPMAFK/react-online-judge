@@ -33,9 +33,11 @@ public class User {
     Set<Submission> submissions;
 
     @OneToMany(mappedBy = "user")
+    @EqualsAndHashCode.Exclude
     Set<ContestParticipator> contestParticipators = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
     Set<SolvedProblem> solvedProblems = new HashSet<>();
 
     @ManyToMany

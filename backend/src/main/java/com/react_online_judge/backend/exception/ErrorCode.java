@@ -22,6 +22,7 @@ public enum ErrorCode {
     UNAUTHENTICATED(202, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     WRONG_PASSWORD(203, "Wrong password", HttpStatus.BAD_REQUEST),
     UNCATEGORIZED(501, "Uncategorized exception", HttpStatus.INTERNAL_SERVER_ERROR),
+    REQUEST_HEADER_MISSING(502, "Request header missing", HttpStatus.BAD_REQUEST),
     ;
     private int code;
     private String message;

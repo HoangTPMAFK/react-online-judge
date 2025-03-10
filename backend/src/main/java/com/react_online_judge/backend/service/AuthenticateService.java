@@ -58,8 +58,8 @@ public class AuthenticateService {
         }
     }
     @PreAuthorize("permitAll()")
-    public IntrospectReponse introspect(IntrospectRequest request) {
-        String token = request.getToken();
+    public IntrospectReponse introspect(String requestToken) {
+        String token = requestToken;
         try {
             var jwtToken = verifiedToken(token, false);
             String jit = jwtToken.getJWTClaimsSet().getJWTID();
@@ -74,10 +74,23 @@ public class AuthenticateService {
                     .account(userMapper.toUserResponse(getUserFromToken(token)))
                     .build();
         } catch (Exception e) {
-//            e.printStackTrace();
-            return IntrospectReponse.builder()
-                    .valid(false)
-                    .build();
+            try {
+                SignedJWT jwtToken = verifiedToken(token, true);
+                String jit = jwtToken.getJWTClaimsSet().getJWTID();
+                Date expirationDate = jwtToken.getJWTClaimsSet().getExpirationTime();
+                invalidTokenRepository.save(new InvalidToken(jit, expirationDate));
+                User user = getUserFromToken(requestToken);
+                String newToken = generateToken(user);
+                return IntrospectReponse.builder()
+                        .valid(true)
+                        .account(userMapper.toUserResponse(user))
+                        .token(newToken)
+                        .build();
+            } catch (Exception e1) {
+                return IntrospectReponse.builder()
+                        .valid(false)
+                        .build();
+            }
         }
     }
     @PreAuthorize("isAuthenticated()")
@@ -136,7 +149,7 @@ public class AuthenticateService {
         JWSVerifier verifier = new MACVerifier(SECRET_KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token.replace("Bearer ", ""));
         Date expiration = (isRefresh) ?
-                new Date(signedJWT.getJWTClaimsSet().getIssueTime().toInstant().plusSeconds((86400 + 3600)).toEpochMilli()) :
+                new Date(signedJWT.getJWTClaimsSet().getIssueTime().toInstant().plusSeconds((86400 + 43200)).toEpochMilli()) :
                 signedJWT.getJWTClaimsSet().getExpirationTime();
         boolean valid = signedJWT.verify(verifier);
         if (valid && expiration.after(new Date(Instant.now().toEpochMilli()))) {

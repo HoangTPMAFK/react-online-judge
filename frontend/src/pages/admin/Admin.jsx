@@ -1,10 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Plus, Check, List } from 'lucide-react';
 import AdminSideBar from '../../components/AdminSideBar';
 import Dashboard from './Dashboard/Dashboard';
-import Form from './Form/Form';
-import Table from './Table/Table';
-import Tabs from './Tabs/Tabs';
 import { Route, Routes } from 'react-router-dom';
 import Contest from './Contest/Contest';
 import ContestDetail from './Contest/ContestDetail';
@@ -13,6 +10,8 @@ import ProblemDetail from './Problem/ProblemDetail';
 import AdminMobileMenu from '../../components/AdminMobileMenu';
 import AdminAccount from './Login/AdminAccount';
 import { useState } from 'react';
+import apiRequest from '../../api/api';
+import { introspect } from '../../api/auth';
 
 const Admin = () => {
   const users = [
@@ -22,7 +21,24 @@ const Admin = () => {
     { firstName: 'Isabella', lastName: 'Brown', phone: '622322662', email: 'jonsmith@mail.com' }
   ].flatMap(user => [user, user]); 
 
+  function getCookie(name) {
+    const cookies = document.cookie.split("; ");
+    for (let cookie of cookies) {
+      let [key, value] = cookie.split("=");
+      if (key === name) {
+        return decodeURIComponent(value);
+      }
+    }
+    return null;
+  }
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const [account, setAccount] = useState(Object);
+  
+  useEffect(() => {
+    introspect(setAccount);
+  }, [])
 
   return (
     <div className="flex bg-gray-100 font-['Karla']">
@@ -59,15 +75,15 @@ const Admin = () => {
         
         <div className="w-full h-screen overflow-x-hidden border-t flex flex-col">
             <Routes>
-                <Route path="/" element={<Dashboard  />} />
-                <Route path="/form/" element={<Form />} />
-                <Route path="/table/" element={<Table   />} />
-                <Route path="/tab/" element={<Tabs />} />
-                <Route path="/contest/" element={<Contest />} />
-                <Route path="/contest/1" element={<ContestDetail />} />
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/contest/" element={<Contest user={account} />} />
+                <Route path="/contest/create" element={<ContestDetail />} />
+                <Route path="/contest/edit/:id" element={<ContestDetail edit={true} />} />
+                <Route path="/contest/view/:id" element={<ContestDetail />} />
                 <Route path="/problem/" element={<Problem />} />
-                <Route path="/problem/1" element={<ProblemDetail />} />
-                <Route path="/account/" element={<AdminAccount />} />
+                <Route path="/problem/view/:id" element={<ProblemDetail />} />
+                <Route path="/problem/edit/:id" element={<ProblemDetail edit={true} />} />
+                <Route path="/account/" element={<AdminAccount key={JSON.stringify(account)} accountInfo={account} />} />
             </Routes>
 
             <footer className="w-full bg-white text-right p-4">

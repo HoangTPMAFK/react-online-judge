@@ -12,12 +12,29 @@ function ProblemDetail() {
   const { id } = useParams();
   
   const [sampleInputOutput, setSampleInputOutput] = useState([]);
+  function getCookie(name) {
+    const cookies = document.cookie.split("; ");
+    for (let cookie of cookies) {
+      let [key, value] = cookie.split("=");
+      if (key === name) {
+        return decodeURIComponent(value);
+      }
+    }
+    return null;
+  }
 
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await fetch(
-          `http://localhost:8080/contest-programing/api/problem/${id}`
+          `http://localhost:8080/contest-programing/api/problem/${id}`,
+          {
+            method: "GET",
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization": getCookie("token")
+            }
+          }
         );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

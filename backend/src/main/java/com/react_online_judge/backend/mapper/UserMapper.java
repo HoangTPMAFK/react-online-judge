@@ -29,7 +29,7 @@ public interface UserMapper {
 
     @Mapping(target = "roles", source = "roles", qualifiedByName = "mapRolesToStrings")
     @Mapping(target = "point", source = "point")
-    @Mapping(target = "solvedProblems", source = "solvedProblems", qualifiedByName = "mapSolvedProblemToSolvedProblemDTO")
+    @Mapping(target = "solvedProblems", source = "solvedProblems", qualifiedByName = "mapSolvedProblemsToSolvedProblemDTOes")
     @Mapping(target = "submissions", source = "submissions", qualifiedByName = "mapSubmissionToSubmissionDTO")
     @Mapping(target = "fname", source = "fname")
     @Mapping(target = "lname", source = "lname")
@@ -67,15 +67,26 @@ class UserMapperHelper {
                 .collect(Collectors.toSet());
     }
 
+    @Named("mapSolvedProblemsToSolvedProblemDTOes")
+    Set<SolvedProblemDTO> mapSolvedProblemsToSolvedProblemDTOes(Set<SolvedProblem> solvedProblems) {
+        if (solvedProblems == null) return new HashSet<>();
+        solvedProblems.size();
+        return solvedProblems.stream()
+                .map(this::mapSolvedProblemToSolvedProblemDTO)
+                .collect(Collectors.toSet());
+    }
+
     @Named("mapSolvedProblemToSolvedProblemDTO")
     SolvedProblemDTO mapSolvedProblemToSolvedProblemDTO(SolvedProblem solvedProblem) {
         if (solvedProblem == null) return null;
+
         return SolvedProblemDTO.builder()
                 .id(solvedProblem.getId())
-                .problemId(solvedProblem.getProblem().getId())
-                .problemTitle(solvedProblem.getProblem().getTitle())
-                .userId(solvedProblem.getUser().getId())
-                .username(solvedProblem.getUser().getUsername())
+                .problemId(solvedProblem.getProblem() != null ? solvedProblem.getProblem().getId() : 0)
+                .problemTitle(solvedProblem.getProblem() != null ? solvedProblem.getProblem().getTitle() : null)
+                .userId(solvedProblem.getUser() != null ? solvedProblem.getUser().getId() : 0)
+                .username(solvedProblem.getUser() != null ? solvedProblem.getUser().getUsername() : null)
+                .point(solvedProblem.getProblem() != null ? solvedProblem.getProblem().getPoint() : 0)
                 .build();
     }
 

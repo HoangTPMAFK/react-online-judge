@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SolvedProblemDTO {
     long id;
@@ -14,4 +15,5 @@ public class SolvedProblemDTO {
     String problemTitle;
     long userId;
     String username;
+    int point;
 }

@@ -31,9 +31,9 @@ public class AuthenticateController {
     }
 
     @PostMapping("/introspect")
-    APIResponse<IntrospectReponse> introspect(@RequestBody IntrospectRequest request) {
+    APIResponse<IntrospectReponse> introspect(@RequestHeader("Authorization") String token) {
         return APIResponse.<IntrospectReponse>builder()
-                .data(authenticateService.introspect(request))
+                .data(authenticateService.introspect(token))
                 .build();
     }
 
