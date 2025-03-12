@@ -1,81 +1,33 @@
 import React, { useEffect, useRef, useState } from "react";
+import { introspect, xorEncryptDecrypt, logout } from "../../../api/auth";
+import { getCookie } from "../../../api/api";
 
 const Account = () => {
   const dob = useRef("2005-09-02");
-  const [account, setAccount] = useState({ lname: "", fname: "", email: "" });
-
-  function getCookie(name) {
-    const cookies = document.cookie.split("; ");
-    for (let cookie of cookies) {
-      let [key, value] = cookie.split("=");
-      if (key === name) {
-        return decodeURIComponent(value);
-      }
-    }
-    return null;
-  }
-
-  function deleteCookie(name) {
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
-  }
+  const [account, setAccount] = useState([]);
 
   useEffect(() => {
-    async function introspect() {
-      try {
-        const response = await fetch("http://localhost:8080/contest-programing/api/auth/introspect", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token: getCookie("token") }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}.`);
-        }
-
-        const jsonData = await response.json();
-        if (!jsonData.data.valid) {
-          deleteCookie("token");
-          window.location.href = "/login";
-        }
-        setAccount(jsonData.data.account);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-    introspect();
-  }, []);
+    setAccount(JSON.parse(xorEncryptDecrypt(atob(localStorage.getItem("account")), localStorage.getItem("loginTime"))))
+  }, [])
 
   const submitHandler = async (e) => {
-    // e.preventDefault();
-
-    if (!account.id) {
-      console.error("Account ID is missing!");
-      return;
-    }
-
+    e.preventDefault();
     console.log("Submitting account data:", account);
-
-    try {
-      const response = await fetch(`http://localhost:8080/contest-programing/api/user/my-profile/`, {
-        method: "PUT",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${getCookie("token")}` // Include token
-        },
-        body: JSON.stringify(account),
-      });      
-
-      const jsonData = await response.json();
-      if (!response.ok) {
-        alert(jsonData.message)
-        throw new Error(`HTTP error! Status: ${response.status}.`);
-      }
-
-      console.log("Updated account successfully:", jsonData);
-      setAccount(jsonData.data);
-    } catch (error) {
-      console.error("Error updating account:", error);
-    }
+    apiRequest(`user/my-profile/`, account, "PUT")
+    .then(
+      response => {
+        setAccount(response.data)
+        localStorage.setItem(
+            "account", 
+            btoa( 
+              xorEncryptDecrypt(
+                JSON.stringify(response.data),
+                localStorage.getItem("loginTime")
+              )
+            )
+        );
+      })
+    .catch(err => console.error(err))
   };
   const logout = async () => {
     try {
@@ -85,15 +37,14 @@ const Account = () => {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${getCookie("token")}` // Include token
         },
-      });      
-
+      });
       const jsonData = await response.json();
       alert(jsonData.message)
-      deleteCookie("token");
+      
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}.`);
       }
-      window.location.href = "/login";
+      logout("USER");
     } catch (error) {
       console.error("Error updating account:", error);
     }
@@ -111,11 +62,11 @@ const Account = () => {
         const jsonData = await response.json();
         if (!response.ok) {
           alert(jsonData.message)
-          deleteCookie("token");
+          logout("USER")
           throw new Error(`HTTP error! Status: ${response.status}.`);
         } else {
           alert(jsonData.message)
-          deleteCookie("token");
+          logout("USER")
         }
       } catch (error) {
         console.error("Error updating account:", error);
@@ -123,7 +74,7 @@ const Account = () => {
   }
 
   return (
-    <form className="p-6 flex items-center h-screen justify-center" onSubmit={submitHandler}>
+    <form className="p-6 flex items-center h-screen justify-center" onSubmit={(e) => submitHandler(e)}>
       <div className="bg-white shadow rounded-lg p-6 flex w-full">
         <div className="w-1/3 flex flex-col items-center">
           <img className="w-32 h-64 rounded-full mb-4" src="https://via.placeholder.com/150" alt="Profile" />
@@ -146,7 +97,6 @@ const Account = () => {
               type="text"
               value={account.username || ""}
               onChange={(e) => setAccount({ ...account, username: e.target.value })}
-              readOnly
             />
           </div>
           <div className="grid grid-cols-2 gap-4">

@@ -3,7 +3,7 @@ import CKEditorComponent from "../../../components/CKEditorComponent";
 import DataTable from "react-data-table-component";
 import PropTypes from "prop-types";
 import { useParams } from "react-router-dom";
-import apiRequest from "../../../api/api";
+import { apiRequest } from "../../../api/api";
 
 // Hàm chuyển mảng (ví dụ: [2023, 5, 15, 14, 30]) sang chuỗi datetime-local ("yyyy-MM-ddTHH:mm")
 function formatDateTimeForInput(arr) {

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import DataTable from "react-data-table-component";
 
-function Contest({user}) {
+function Contest() {
   function getCookie(name) {
     const cookies = document.cookie.split("; ");
     for (let cookie of cookies) {

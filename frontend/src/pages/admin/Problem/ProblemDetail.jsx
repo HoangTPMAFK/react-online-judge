@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Submission from "./Submission";
-import apiRequest from "../../../api/api";
 import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
+import {apiRequest} from "../../../api/api";
 
 function ProblemDetail({ edit }) {
   const [problem, setProblem] = useState({});

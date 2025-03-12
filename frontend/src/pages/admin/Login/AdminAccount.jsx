@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
-import apiRequest from "../../../api/api";
+import { apiRequest, getCookie } from "../../../api/api";
+import { xorEncryptDecrypt, logout } from "../../../api/auth";
 
 const AdminAccount = ({ accountInfo }) => {
   const [day, setDay] = useState("2005-02-09");
@@ -18,6 +19,7 @@ const AdminAccount = ({ accountInfo }) => {
   };
 
   const submitHandler = async (e) => {
+    e.preventDefault()
     if (!account.id) {
       console.error("Account ID is missing!");
       return;
@@ -25,26 +27,36 @@ const AdminAccount = ({ accountInfo }) => {
 
     console.log("Submitting account data:", account);
     apiRequest(`user/my-profile/`, account, "PUT")
-    .then(response => setAccount(response.data))
+    .then(
+      response => {
+        localStorage.setItem(
+          "account", 
+          btoa( 
+            xorEncryptDecrypt(
+              JSON.stringify(response.data),
+              localStorage.getItem("loginTime")
+            )
+          )
+        );
+      })
     .catch(err => console.error(err))
   };
   const logout = async () => {
     try {
+      alert(1)
       const response = await fetch(`http://localhost:8080/contest-programing/api/auth/logout`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${getCookie("token")}` // Include token
+          "Authorization": `${getCookie("token")}` // Include token
         },
       });      
-
       const jsonData = await response.json();
-      alert(jsonData.message)
-      deleteCookie("token");
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}.`);
       }
-      window.location.href = "/login";
+      alert(jsonData.message)
+      logout("admin");
     } catch (error) {
       console.error("Error updating account:", error);
     }
@@ -75,7 +87,7 @@ const AdminAccount = ({ accountInfo }) => {
 
   return (
     <div className="p-6 flex items-center h-screen justify-center">
-      <form onSubmit={submitHandler} className="bg-white shadow rounded-lg p-6 flex w-full">
+      <form onSubmit={(e) => submitHandler(e)} className="bg-white shadow rounded-lg p-6 flex w-full">
         {/* Avatar và hành động */}
         <div className="w-1/3 flex flex-col items-center">
           <img
@@ -84,10 +96,10 @@ const AdminAccount = ({ accountInfo }) => {
             alt="Profile"
           />
           <input type="file" className="mb-4" />
-          <button className="px-4 py-2 text-red-600 border border-red-600 rounded-lg hover:bg-red-100 w-full mb-2" onClick={logout}>
+          <button type="button" className="px-4 py-2 text-red-600 border border-red-600 rounded-lg hover:bg-red-100 w-full mb-2" onClick={logout}>
             Đăng xuất
           </button>
-          <button className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 w-full" onClick={deleteAccount}>
+          <button type="button" className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 w-full" onClick={deleteAccount}>
             Xóa tài khoản
           </button>
         </div>

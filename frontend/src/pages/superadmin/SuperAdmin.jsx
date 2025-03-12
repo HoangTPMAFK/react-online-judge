@@ -14,8 +14,8 @@ import SuperAdminAccount from './Login/SuperAdminAccount';
 import RolePermissionManager from './Role/RolePermissionManager';
 import PermissionManager from './Permission/PermissionManager';
 import { useState } from 'react';
-import apiRequest from '../../api/api';
 import { logout, authenticate, introspect } from "../../api/auth";
+import Cookies from "js-cookie";
 
 
 const SuperAdmin = () => {
@@ -30,7 +30,7 @@ const SuperAdmin = () => {
   const [account, setAccount] = useState([]);
 
   useEffect(() => {
-      introspect(setAccount);
+      introspect("superadmin");
   }, [])
 
   return (
@@ -75,7 +75,7 @@ const SuperAdmin = () => {
                 <Route path="/user" element={<User />} />
                 <Route path="/user/view/:id" element={<UserDetail />} />
                 <Route path="/user/edit/:id" element={<UserDetail edit={true} />} />
-                <Route path="/account/" element={<SuperAdminAccount key={JSON.stringify(account)} accountInfo={account} />} />
+                <Route path="/account/" element={<SuperAdminAccount key={Cookies.get("account")} accountInfo={JSON.parse(xorEncryptDecrypt(atob(localStorage.getItem("account")), localStorage.getItem("loginTime")) || "{}")} />} />
                 <Route path="/role/" element={<RolePermissionManager />} />
                 <Route path="/permission/" element={<PermissionManager />} />
             </Routes>

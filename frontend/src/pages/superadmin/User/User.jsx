@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import DataTable from "react-data-table-component";
-import apiRequest from "../../../api/api";
+import { apiRequest } from "../../../api/api";
 
 function User() {
   const [users, setUsers] = useState([])

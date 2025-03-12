@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import CKEditorComponent from "../../../components/CKEditorComponent";
 import DataTable from "react-data-table-component";
 import PropTypes from "prop-types";
-import apiRequest from "../../../api/api";
+import { apiRequest } from "../../../api/api";
 import { useParams } from "react-router-dom";
 
 function UserDetail({edit}) {

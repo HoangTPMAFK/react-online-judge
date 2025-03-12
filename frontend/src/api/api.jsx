@@ -1,16 +1,12 @@
+import Cookies from "js-cookie";
+
 const BASE_API_URL = "http://localhost:8080/contest-programing/api"
- 
-function getCookie(name) {
-    const cookies = document.cookie.split("; ");
-    for (let cookie of cookies) {
-        let [key, value] = cookie.split("=");
-        if (key === name) {
-            return decodeURIComponent(value);
-        }
-    }
-    return null;
+  
+export function getCookie(name) {
+    return Cookies.get(name) || null;
 }
-async function apiRequest(endpoint, body, method = "GET", isFormData = false) {
+
+export async function apiRequest(endpoint, body, method = "GET", isFormData = false) {
     try {
         const URL = `${BASE_API_URL}/${endpoint}`;
         console.log("Requesting:", URL);
@@ -45,6 +41,3 @@ async function apiRequest(endpoint, body, method = "GET", isFormData = false) {
         throw error;
     }
 }
-
-
-export default apiRequest;

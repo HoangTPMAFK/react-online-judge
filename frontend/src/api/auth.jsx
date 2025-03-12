@@ -1,13 +1,42 @@
-import apiRequest from "./api";
+import { apiRequest, getCookie } from "./api";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
-function logout(role) {
-    localStorage.removeItem("token");
-    window.location.href = "/" + (role && role !== "user" ? `${role.toLowerCase()}` : "") + "login";
+const getIssueTime = (token) => {
+    try {
+        const decoded = jwtDecode(token);
+        return decoded.iat || null; // Trả về số giây từ epoch
+    } catch (error) {
+        console.error("Invalid token", error);
+        return null;
+    }
+};
+
+function xorEncryptDecrypt(text, key) {
+    return text.split('').map((char, i) => 
+        String.fromCharCode(char.charCodeAt(0) ^ key.charCodeAt(i % key.length))
+    ).join('');
 }
 
-function authenticate({ loginRequest, setAccount }) {
+function logout(role) {
+    Cookies.remove("token")
+    localStorage.removeItem("account")
+    window.location.href = "/" + (role && role.toLowerCase() !== "login" ? `${role.toLowerCase()}/` : "") + "login";
+}
+
+async function isAuthenticated() {
+    try {
+        const response = await apiRequest("auth/introspect", null, "POST");
+        return response.data.valid;
+    } catch (error) {
+        return false;
+    }
+}
+
+async function authenticate({ loginRequest }) {
     apiRequest("auth/login", loginRequest, "POST")
         .then(response => {
+            console.log(response)
             if (!response?.data?.account || !response?.data?.token) {
                 throw new Error("Invalid response structure");
             }
@@ -16,11 +45,23 @@ function authenticate({ loginRequest, setAccount }) {
             const token = response.data.token;
             const currentRole = window.location.pathname.split("/")[1]?.toUpperCase() || "";
             
-            localStorage.setItem("token", token);
-            setAccount(account);
+            Cookies.set("token", token, { expires: 2, secure: true, sameSite: "Strict" });
+            localStorage.setItem("loginTime", getIssueTime(token))
+            localStorage.setItem(
+                "account", 
+                btoa( 
+                     xorEncryptDecrypt(
+                        JSON.stringify(account),
+                        localStorage.getItem("loginTime")
+                    )
+                )
+            );
 
-            if (!(account.roles.includes(currentRole) || (account.roles.includes("USER") && currentRole === ""))) {
+            if (!(account.roles.includes(currentRole) || (account.roles.includes("USER") && currentRole === "LOGIN"))) {
+                alert(JSON.stringify(response));
                 logout(currentRole);
+            } else {
+                window.location.href = "/" + (window.location.pathname.split("/")[1] || "") 
             }
         })
         .catch(err => {
@@ -29,7 +70,15 @@ function authenticate({ loginRequest, setAccount }) {
         });
 }
 
-function introspect(setAccount) {
+async function introspect(role, ignore = false) {
+    if (!getCookie("token")) {
+        if (!ignore) logout(role);
+    } else {
+        const decodedToken = jwtDecode(getCookie("token"));
+        if (!decodedToken.roles.map(r => r.toUpperCase()).includes(role.toUpperCase())) {
+            logout(role);
+        }
+    }
     apiRequest("auth/introspect", null, "POST")
         .then(response => {
             if (!response?.data) {
@@ -38,9 +87,7 @@ function introspect(setAccount) {
             
             if (response.data.valid === false) {
                 const currentUrl = window.location.pathname.split("/")[1] || "";
-                logout(currentUrl);
-            } else {
-                setAccount(response.data.account);
+                if (!ignore) logout(currentUrl);
             }
         })
         .catch(err => {
@@ -50,7 +97,9 @@ function introspect(setAccount) {
 }
 
 export {
-    logout, 
-    authenticate, 
-    introspect
+    logout,
+    authenticate,
+    introspect,
+    isAuthenticated,
+    xorEncryptDecrypt
 } ; 
