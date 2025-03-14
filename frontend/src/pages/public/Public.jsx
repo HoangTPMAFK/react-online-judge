@@ -1,4 +1,4 @@
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import Home from "./Home/Home";
 import Problem from "./Problems/Problem";
 import Contest from "./Contest/Contest";
@@ -9,70 +9,44 @@ import Login from "./Login/Login";
 import ContestDetail from "./Contest/ContestDetail";
 import User from "./User/User";
 import Account from "./Login/Account";
-// import NotFound from "./NotFound/NotFound";
+import NotFound from "../NotFound";
 import { FaTrophy } from "react-icons/fa";
 import { FaRankingStar } from "react-icons/fa6";
 import { MdBarChart } from "react-icons/md";
 import { LuTableProperties } from "react-icons/lu";
 import { IoMdHome } from "react-icons/io";
 import { useEffect, useState } from "react";
-
-function NotFound() {
-  return (
-    <div className="text-center py-20">
-      <h1 className="text-4xl font-bold">404 - Page Not Found</h1>
-      <p className="text-lg">Oops! Trang bạn tìm kiếm không tồn tại.</p>
-      <Link to="/" className="text-blue-500 underline">
-        Quay về trang chủ
-      </Link>
-    </div>
-  );
-}
+import { introspect, isAuthenticated, xorEncryptDecrypt } from '../../api/auth';
+import Cookies from "js-cookie";
 
 function Public() {
-  function getCookie(name) {
-    const cookies = document.cookie.split("; ");
-    for (let cookie of cookies) {
-      let [key, value] = cookie.split("=");
-      if (key === name) {
-        return decodeURIComponent(value);
-      }
-    }
-    return null;
-  }
 
   const [account, setAccount] = useState(null);
+  const [auth, setAuth] = useState(null);
+  const navigate = useNavigate(); // Thay thế window.location.href
 
   useEffect(() => {
-    async function introspect() {
-      try {
-        const response = await fetch(
-          "http://localhost:8080/contest-programing/api/auth/introspect",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ token: getCookie("token") }),
-          }
-        );
-        const jsonData = await response.json();
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}.`);
-        }
-
-        console.log("API Response:", jsonData.data);
-        setAccount(jsonData.data.account);
-      } catch (error) {
-        console.error("Error fetching data:", error);
+    let isMounted = true; // Biến kiểm tra component có còn mounted không
+  
+    const checkAuth = async () => {
+      if (!isMounted) return;
+  
+      const valid = await isAuthenticated();
+      if (!isMounted) return;
+  
+      if (valid) {
+        setAuth(true);
+        introspect("USER", true);
+        setAccount(JSON.parse(xorEncryptDecrypt(atob(localStorage.getItem("account")), localStorage.getItem("loginTime")) || "{}"));
       }
-    }
-
-    introspect();
-  }, []);
-
-  useEffect(() => {
-    console.log("Updated account:", account);
-  }, [account]);
+    };
+  
+    checkAuth();
+  
+    return () => {
+      isMounted = false; // Hủy bỏ nếu component bị unmount
+    };
+  }, [navigate]);
 
   return (
     <div className="min-w-[860px]">

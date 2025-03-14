@@ -6,8 +6,8 @@ server:
 spring:
   datasource:
     url: "jdbc:mariadb://14.165.105.186:3306/contest_programing"
-    username: root
-    password: lenovothinkpadx230
+    username: <username>
+    password: <password>
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:

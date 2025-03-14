@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface PermissionRepository extends JpaRepository<Permission, Long> {
+public interface PermissionRepository extends JpaRepository<Permission, String> {
     Optional<Permission> findByName(String name);
     @Query("SELECT p FROM Permission p JOIN p.roles r WHERE r.name = :role")
     List<Permission> findByRole(@Param("role") String role);

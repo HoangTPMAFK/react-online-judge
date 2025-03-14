@@ -14,5 +14,7 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
     List<Problem> findByContestId(@Param("contestId") Long contestId);
     List<Problem> findAllByPublicFlag(boolean isPublic);
     List<Problem> findAllByAuthor(String author);
+    @Query("SELECT p FROM Problem p WHERE p.author = :author AND p.title LIKE %:title%")
+    List<Problem> findAllByAuthorAndTitleLike(@Param("author") String author, @Param("title") String title);
     void deleteById(Long id);
 }

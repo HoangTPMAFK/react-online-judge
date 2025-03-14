@@ -16,9 +16,9 @@ public class ProblemController {
     @Autowired
     private ProblemService problemService;
     @GetMapping("/{problemId}")
-    public APIResponse<ProblemResponse> getProblemByid(@PathVariable Long problemId) {
+    public APIResponse<ProblemResponse> getProblemByid(@RequestHeader("Authorization") String token, @PathVariable Long problemId) {
         return APIResponse.<ProblemResponse>builder()
-                .data(problemService.getProblemById(problemId))
+                .data(problemService.getProblemById(token, problemId))
                 .build();
     }
     @GetMapping("/")
@@ -27,10 +27,16 @@ public class ProblemController {
                 .data(problemService.getAllProblems())
                 .build();
     }
-    @GetMapping("/my-created-problem")
+    @GetMapping("/my-created-problems")
     public APIResponse<List<ProblemResponse>> getMyCreatedProblems(@RequestHeader("Authorization") String token) {
         return APIResponse.<List<ProblemResponse>>builder()
                 .data(problemService.getProblemsByCreator(token))
+                .build();
+    }
+    @GetMapping("/my-created-problems/{name}")
+    public APIResponse<List<ProblemResponse>> getMyCreatedProblems(@RequestHeader("Authorization") String token, @PathVariable String name) {
+        return APIResponse.<List<ProblemResponse>>builder()
+                .data(problemService.getProblemsByCreatorAndByTitle(token, name))
                 .build();
     }
     @GetMapping("/public")

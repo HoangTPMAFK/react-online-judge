@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface RoleRepository extends JpaRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<Role, String> {
     @EntityGraph(attributePaths = {"rolePermissions"})
     Optional<Role> findRoleByName(@Param("name") String name);
     void deleteByName(String name);

@@ -112,9 +112,16 @@ public class ContestService {
         }
     }
     @PreAuthorize("hasRole('ADMIN')")
-    public List<ContestResponse> getMyCreatedContests(String token, Long userId) {
-        List<Contest> contests = contestRepository.findByCreatorId(userId);
-        return contestMapper.toContestResponseList(contests);
+    public List<ContestResponse> getMyCreatedContests(String token) {
+        User user;
+        try {
+            user = authenticateService.getUserFromToken(token);
+            List<Contest> contests = contestRepository.findByCreatorId(user.getId());
+            return contestMapper.toContestResponseList(contests);
+        } catch (ParseException | JOSEException e) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+
     }
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('DELETE_CONTEST')")
     public void deleteContest(Long id) {

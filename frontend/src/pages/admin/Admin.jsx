@@ -1,11 +1,7 @@
-import React from 'react';
-import { Plus, Check, List } from 'lucide-react';
+import React, { useEffect } from 'react';
 import AdminSideBar from '../../components/AdminSideBar';
 import Dashboard from './Dashboard/Dashboard';
-import Form from './Form/Form';
-import Table from './Table/Table';
-import Tabs from './Tabs/Tabs';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import Contest from './Contest/Contest';
 import ContestDetail from './Contest/ContestDetail';
 import Problem from './Problem/Problem';
@@ -13,8 +9,51 @@ import ProblemDetail from './Problem/ProblemDetail';
 import AdminMobileMenu from '../../components/AdminMobileMenu';
 import AdminAccount from './Login/AdminAccount';
 import { useState } from 'react';
+import { introspect, isAuthenticated, xorEncryptDecrypt } from '../../api/auth';
+import Login from './Login/Login';
+import Cookies from "js-cookie";
+import { getCookie } from '../../api/api';
+
 
 const Admin = () => {
+  const [token, setToken] = useState(null);
+  const [auth, setAuth] = useState(null);
+  const navigate = useNavigate(); // Thay thế window.location.href
+
+  useEffect(() => {
+    let isMounted = true; // Biến kiểm tra component có còn mounted không
+  
+    const checkAuth = async () => {
+      if (!isMounted) return;
+  
+      const storedToken = Cookies.get("token");
+  
+      if (!storedToken) {
+        navigate("/admin/login", { replace: true }); // Tránh lặp lại trong lịch sử trình duyệt
+        return;
+      }
+  
+      const valid = await isAuthenticated();
+      if (!isMounted) return;
+  
+      if (!valid) {
+        navigate("/admin/login", { replace: true });
+      } else {
+        setToken(storedToken);
+        setAuth(true);
+        introspect("admin");
+      }
+    };
+  
+    checkAuth();
+  
+    return () => {
+      isMounted = false; // Hủy bỏ nếu component bị unmount
+    };
+  }, [navigate]);
+  
+  
+  
   const users = [
     { firstName: 'Lian', lastName: 'Smith', phone: '622322662', email: 'jonsmith@mail.com' },
     { firstName: 'Emma', lastName: 'Johnson', phone: '622322662', email: 'jonsmith@mail.com' },
@@ -59,15 +98,15 @@ const Admin = () => {
         
         <div className="w-full h-screen overflow-x-hidden border-t flex flex-col">
             <Routes>
-                <Route path="/" element={<Dashboard  />} />
-                <Route path="/form/" element={<Form />} />
-                <Route path="/table/" element={<Table   />} />
-                <Route path="/tab/" element={<Tabs />} />
+                <Route path="/" element={<Dashboard />} />
                 <Route path="/contest/" element={<Contest />} />
-                <Route path="/contest/1" element={<ContestDetail />} />
+                <Route path="/contest/create" element={<ContestDetail />} />
+                <Route path="/contest/edit/:id" element={<ContestDetail edit={true} />} />
+                <Route path="/contest/view/:id" element={<ContestDetail />} />
                 <Route path="/problem/" element={<Problem />} />
-                <Route path="/problem/1" element={<ProblemDetail />} />
-                <Route path="/account/" element={<AdminAccount />} />
+                <Route path="/problem/view/:id" element={<ProblemDetail />} />
+                <Route path="/problem/edit/:id" element={<ProblemDetail edit={true} />} />
+                <Route path="/account/" element={<AdminAccount key={localStorage.getItem("account") || ""} accountInfo={JSON.parse(xorEncryptDecrypt(atob(localStorage.getItem("account")), localStorage.getItem("loginTime")) || "{}")} />} />
             </Routes>
 
             <footer className="w-full bg-white text-right p-4">

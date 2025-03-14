@@ -2,6 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import DataTable from "react-data-table-component";
 
 function Contest() {
+  function getCookie(name) {
+    const cookies = document.cookie.split("; ");
+    for (let cookie of cookies) {
+      let [key, value] = cookie.split("=");
+      if (key === name) {
+        return decodeURIComponent(value);
+      }
+    }
+    return null;
+  }
   const [contests, setContests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filteredData, setFilteredData] = useState([]);
@@ -12,7 +22,14 @@ function Contest() {
     async function fetchData() {
       try {
         const response = await fetch(
-          "http://localhost:8080/contest-programing/api/contest/"
+          "http://localhost:8080/contest-programing/api/contest/my-created-contests",
+          {
+            method: "GET",
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization": getCookie("token")
+            }
+          }
         );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -22,23 +39,7 @@ function Contest() {
         const updatedData = jsonData.data.map((item) => {
           const startTime = new Date(...item.startAt);
 
-          //  const startTime = new Date(
-          //    item.startAt[0],
-          //    item.startAt[1] - 1,
-          //    item.startAt[2],
-          //    item.startAt[3],
-          //    item.startAt[4],
-          //    item.startAt[5]
-          //  );
           const endTime = new Date(...item.endAt);
-          //  const endTime = new Date(
-          //    item.endAt[0],
-          //    item.endAt[1] - 1,
-          //    item.endAt[2],
-          //    item.endAt[3],
-          //    item.endAt[4],
-          //    item.endAt[5]
-          //  );
           const currentTime = new Date();
 
           let status = "Not Started";
@@ -118,7 +119,7 @@ function Contest() {
           <button
             className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-3 rounded"
             onClick={() => {
-              window.location.href = "/admin/contest/" + row.id;
+              window.location.href = "/admin/contest/view/" + row.id;
             }}
           >
             View
@@ -126,7 +127,7 @@ function Contest() {
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded"
             onClick={() => {
-              window.location.href = "/admin/contest/" + row.id + "/edit";
+              window.location.href = "/admin/contest/edit/" + row.id;
             }}
           >
             Edit

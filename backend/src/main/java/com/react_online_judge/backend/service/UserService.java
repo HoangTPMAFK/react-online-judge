@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -36,6 +37,9 @@ public class UserService {
     @PreAuthorize("permitAll()")
     public UserResponse getUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+//        if (!Arrays.asList(user.getRoles().stream().map(role -> role.getName()).toArray(String[]::new)).contains("USER")) {
+//            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+//        }
         return userMapper.toUserResponse(user);
     }
     @PreAuthorize("permitAll()")
@@ -113,7 +117,7 @@ public class UserService {
             }
             userMapper.updateUser(user, request);
             user.setPassword(passwordEncoder.encode(request.getPassword()));
-            IntrospectReponse introspect = authenticateService.introspect(IntrospectRequest.builder().token(token).build());
+            IntrospectReponse introspect = authenticateService.introspect(token);
             if (introspect.isValid()) {
                 if (request.getNewPassword() != null) {
                     if (request.getNewPassword().length() >= 8) {

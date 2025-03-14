@@ -24,9 +24,6 @@ public class ContestCreationRequest {
     LocalDateTime startAt;
 
     @NotNull
-    long creatorId;
-
-    @NotNull
     LocalDateTime endAt;
 
     Set<String> problems;

@@ -42,7 +42,8 @@ function Problems() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("http://localhost:8080/contest-programing/api/problem/public");
+        const response = await fetch("http://localhost:8080/contest-programing/api/problem/public",
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}. ${response.message}`);
         }

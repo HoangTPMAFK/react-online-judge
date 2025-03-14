@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -38,5 +39,5 @@ public class ProblemCreationRequest {
     @NotBlank
     String sampleInputOutput; // JSON string
     String hiddenInputOutput;
-    Date create_at;
+    LocalDateTime createAt = LocalDateTime.now();
 }
