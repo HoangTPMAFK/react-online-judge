@@ -9,22 +9,14 @@ function Login() {
     const navigate = useNavigate();
     const [error, setError] = useState(""); // Lưu thông báo lỗi
 
-    useEffect(() => {
-        const checkAuth = async () => {
-            const valid = await isAuthenticated();
-            if (valid) {
-                navigate("/", { replace: true });
-            } else if (getCookie("token") !== null && !valid) {
-                setError("Wrong username or password")
-            }
-        };
-        checkAuth();
-    }, [navigate]);
-
-
     const submitHandler = async (event) => {
         event.preventDefault();
-        await authenticate({loginRequest});
+        const valid = await authenticate({loginRequest});
+        if (valid) {
+            navigate("/", { replace: true });
+        } else {
+            setError("Wrong username or password")
+        }
     };
 
     return (

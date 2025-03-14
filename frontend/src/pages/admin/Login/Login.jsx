@@ -5,24 +5,17 @@ import { getCookie } from "../../../api/api";
 
 function Login() {
     const [loginRequest, setLoginRequest] = useState({ username: "", password: "" });
-    const navigate = useNavigate(); // Thay thế window.location.href
-    const [error, setError] = useState("");
+    const navigate = useNavigate();
+    const [error, setError] = useState(""); // Lưu thông báo lỗi
 
-    useEffect(() => {
-        const checkAuth = async () => {
-            const valid = await isAuthenticated();
-            if (valid) {
-                navigate("/admin", { replace: true });
-            } else if (getCookie("token") !== null && !valid) {
-                setError("Wrong username or password")
-            }
-        };
-        checkAuth();
-    }, [navigate]);
-
-    const login = async (e) => {
-        e.preventDefault();
-        await authenticate({ loginRequest });
+    const submitHandler = async (event) => {
+        event.preventDefault();
+        const valid = await authenticate({loginRequest});
+        if (valid) {
+            navigate("/admin", { replace: true });
+        } else {
+            setError("Wrong username or password")
+        }
     };
 
     return (

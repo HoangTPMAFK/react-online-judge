@@ -21,7 +21,7 @@ function xorEncryptDecrypt(text, key) {
 function logout(role) {
     Cookies.remove("token")
     localStorage.removeItem("account")
-    window.location.href = "/" + (role && role.toLowerCase() !== "login" ? `${role.toLowerCase()}/` : "") + "login";
+    window.location.href = "/" + (role && role.toLowerCase() !== "user" ? `${role.toLowerCase()}/` : "") + "login";
 }
 
 async function isAuthenticated() {
@@ -34,41 +34,43 @@ async function isAuthenticated() {
 }
 
 async function authenticate({ loginRequest }) {
-    apiRequest("auth/login", loginRequest, "POST")
-        .then(response => {
-            console.log(response)
-            if (!response?.data?.account || !response?.data?.token) {
-                throw new Error("Invalid response structure");
-            }
+    try {
+        const response = await apiRequest("auth/login", loginRequest, "POST");
 
-            const account = response.data.account;
-            const token = response.data.token;
-            const currentRole = window.location.pathname.split("/")[1]?.toUpperCase() || "";
-            
-            Cookies.set("token", token, { expires: 2, secure: true, sameSite: "Strict" });
-            localStorage.setItem("loginTime", getIssueTime(token))
-            localStorage.setItem(
-                "account", 
-                btoa( 
-                     xorEncryptDecrypt(
-                        JSON.stringify(account),
-                        localStorage.getItem("loginTime")
-                    )
+        if (response.data.token == null) {
+            console.log(response);
+            return false;
+        }
+
+        const account = response.data.account;
+        const token = response.data.token;
+        const currentRole = window.location.pathname.split("/")[1]?.toUpperCase() || "";
+
+        if (!(account.roles.includes(currentRole) || (account.roles.includes("USER") && currentRole === "LOGIN"))) {
+            return false;
+        }
+
+        // Lưu token và thông tin tài khoản
+        Cookies.set("token", token, { expires: 2, secure: true, sameSite: "Strict" });
+        localStorage.setItem("loginTime", getIssueTime(token));
+        localStorage.setItem(
+            "account",
+            btoa(
+                xorEncryptDecrypt(
+                    JSON.stringify(account),
+                    localStorage.getItem("loginTime")
                 )
-            );
+            )
+        );
 
-            if (!(account.roles.includes(currentRole) || (account.roles.includes("USER") && currentRole === "LOGIN"))) {
-                alert(JSON.stringify(response));
-                logout(currentRole);
-            } else {
-                window.location.href = "/" + (window.location.pathname.split("/")[1] || "") 
-            }
-        })
-        .catch(err => {
-            console.error("Authentication error:", err);
-            logout();
-        });
+        return true;
+    } catch (err) {
+        console.error("Authentication error:", err);
+        return false;
+    }
 }
+
+
 
 async function introspect(role, ignore = false) {
     if (!getCookie("token")) {

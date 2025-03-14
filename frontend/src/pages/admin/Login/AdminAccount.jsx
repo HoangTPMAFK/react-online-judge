@@ -14,49 +14,47 @@ const AdminAccount = ({ accountInfo }) => {
     console.log(accountInfo);
   }, []);
 
-  const handleDateChange = (event) => {
-    setDay(event.target.value);
-  };
+  const dob = useRef("2005-09-02");
+  
+  useEffect(() => {
+    setAccount(JSON.parse(xorEncryptDecrypt(atob(localStorage.getItem("account")), localStorage.getItem("loginTime"))))
+  }, [])
 
   const submitHandler = async (e) => {
-    e.preventDefault()
-    if (!account.id) {
-      console.error("Account ID is missing!");
-      return;
-    }
-
+    e.preventDefault();
     console.log("Submitting account data:", account);
     apiRequest(`user/my-profile/`, account, "PUT")
     .then(
       response => {
+        setAccount(response.data)
         localStorage.setItem(
-          "account", 
-          btoa( 
-            xorEncryptDecrypt(
-              JSON.stringify(response.data),
-              localStorage.getItem("loginTime")
+            "account", 
+            btoa( 
+              xorEncryptDecrypt(
+                JSON.stringify(response.data),
+                localStorage.getItem("loginTime")
+              )
             )
-          )
         );
       })
     .catch(err => console.error(err))
   };
-  const logout = async () => {
+  const logoutAccount = async () => {
     try {
-      alert(1)
       const response = await fetch(`http://localhost:8080/contest-programing/api/auth/logout`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `${getCookie("token")}` // Include token
+          "Authorization": `Bearer ${getCookie("token")}` // Include token
         },
-      });      
+      });
       const jsonData = await response.json();
+      alert(jsonData.message)
+      
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}.`);
       }
-      alert(jsonData.message)
-      logout("admin");
+      logout("USER");
     } catch (error) {
       console.error("Error updating account:", error);
     }
@@ -74,11 +72,11 @@ const AdminAccount = ({ accountInfo }) => {
         const jsonData = await response.json();
         if (!response.ok) {
           alert(jsonData.message)
-          deleteCookie("token");
+          logout("USER")
           throw new Error(`HTTP error! Status: ${response.status}.`);
         } else {
           alert(jsonData.message)
-          deleteCookie("token");
+          logout("USER")
         }
       } catch (error) {
         console.error("Error updating account:", error);
