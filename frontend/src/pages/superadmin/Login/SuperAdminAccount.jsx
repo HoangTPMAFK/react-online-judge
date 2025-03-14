@@ -41,22 +41,22 @@ const SuperAdminAccount = ({ accountInfo }) => {
       })
     .catch(err => console.error(err))
   };
-  const logout = async () => {
+  const logoutAccount = async () => {
     try {
-      alert(1)
       const response = await fetch(`http://localhost:8080/contest-programing/api/auth/logout`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `${getCookie("token")}` // Include token
+          "Authorization": `Bearer ${getCookie("token")}` // Include token
         },
-      });      
+      });
       const jsonData = await response.json();
+      alert(jsonData.message)
+      
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}.`);
       }
-      alert(jsonData.message)
-      logout("admin");
+      logout("USER");
     } catch (error) {
       console.error("Error updating account:", error);
     }
@@ -96,7 +96,7 @@ const SuperAdminAccount = ({ accountInfo }) => {
             alt="Profile"
           />
           <input type="file" className="mb-4" />
-          <button type="button" className="px-4 py-2 text-red-600 border border-red-600 rounded-lg hover:bg-red-100 w-full mb-2" onClick={logout}>
+          <button type="button" className="px-4 py-2 text-red-600 border border-red-600 rounded-lg hover:bg-red-100 w-full mb-2" onClick={logoutAccount}>
             Đăng xuất
           </button>
           <button type="button" className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 w-full" onClick={deleteAccount}>

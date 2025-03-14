@@ -29,7 +29,7 @@ const Account = () => {
       })
     .catch(err => console.error(err))
   };
-  const logout = async () => {
+  const logoutAccount = async () => {
     try {
       const response = await fetch(`http://localhost:8080/contest-programing/api/auth/logout`, {
         method: "POST",
@@ -79,7 +79,7 @@ const Account = () => {
         <div className="w-1/3 flex flex-col items-center">
           <img className="w-32 h-64 rounded-full mb-4" src="https://via.placeholder.com/150" alt="Profile" />
           <input type="file" className="mb-4" />
-          <button type="button" className="px-4 py-2 text-red-600 border border-red-600 rounded-lg hover:bg-red-100 w-full mb-2" onClick={logout}>
+          <button type="button" className="px-4 py-2 text-red-600 border border-red-600 rounded-lg hover:bg-red-100 w-full mb-2" onClick={logoutAccount}>
             Đăng xuất
           </button>
           <button type="button" className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 w-full" onClick={deleteAccount}>
