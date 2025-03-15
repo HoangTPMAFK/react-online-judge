@@ -25,26 +25,26 @@ const Admin = () => {
   
     const checkAuth = async () => {
       if (!isMounted) return;
-  
+    
       const storedToken = Cookies.get("token");
-  
       if (!storedToken) {
-        navigate("/admin/login", { replace: true }); // Tránh lặp lại trong lịch sử trình duyệt
+        navigate("/admin/login", { replace: true });
         return;
       }
-  
+    
       const valid = await isAuthenticated();
       if (!isMounted) return;
-  
+    
       if (!valid) {
         navigate("/admin/login", { replace: true });
-      } else {
-        setToken(storedToken);
-        setAuth(true);
-        introspect("admin");
+        return;
       }
+    
+      setToken(storedToken);
+      setAuth(true);
+      introspect("admin");
     };
-  
+    
     checkAuth();
   
     return () => {
@@ -62,6 +62,29 @@ const Admin = () => {
   ].flatMap(user => [user, user]); 
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const logoutAccount = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/contest-programing/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+      });
+
+      const jsonData = await response.json();
+      alert(jsonData.message);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}.`);
+      }
+      logout("admin");
+    } catch (error) {
+      console.error("Lỗi khi đăng xuất:", error);
+      setWrongPassword(true);
+    }
+  };
 
   return (
     <div className="flex bg-gray-100 font-['Karla']">
@@ -86,7 +109,7 @@ const Admin = () => {
                 <a href="/admin/account/" className="block px-4 py-2 text-gray-800 hover:bg-blue-600">
                   Account
                 </a>
-                <a href="/" className="block px-4 py-2 text-gray-800 hover:bg-blue-600">
+                <a onClick={logoutAccount} className="block px-4 py-2 text-gray-800 hover:bg-blue-600">
                   Sign Out
                 </a>
               </div>

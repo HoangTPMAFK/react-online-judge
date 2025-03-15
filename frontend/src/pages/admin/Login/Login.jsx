@@ -8,7 +8,7 @@ function Login() {
     const navigate = useNavigate();
     const [error, setError] = useState(""); // Lưu thông báo lỗi
 
-    const submitHandler = async (event) => {
+    const login = async (event) => {
         event.preventDefault();
         const valid = await authenticate({loginRequest});
         if (valid) {

@@ -25,6 +25,8 @@ function Public() {
   const [auth, setAuth] = useState(null);
   const navigate = useNavigate(); // Thay thế window.location.href
 
+  
+
   useEffect(() => {
     let isMounted = true; // Biến kiểm tra component có còn mounted không
   
@@ -104,7 +106,7 @@ function Public() {
             onClick={() => (window.location.href = "/account")}
           >
             <img
-              src={account.avatar}
+              src={"http://localhost:8080/contest-programing/"+account.avatar}
               className="h-10 w-10 rounded-full"
               alt="User Avatar"
             />

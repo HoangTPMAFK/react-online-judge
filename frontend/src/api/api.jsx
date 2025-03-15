@@ -18,7 +18,7 @@ export async function apiRequest(endpoint, body, method = "GET", isFormData = fa
         let requestBody;
         
         if (isFormData) {
-            requestBody = body; // Nếu là FormData, giữ nguyên
+            requestBody = body;
         } else {
             headers["Content-Type"] = "application/json";
             requestBody = body && (method === "POST" || method === "PUT") ? JSON.stringify(body) : undefined;
@@ -31,7 +31,9 @@ export async function apiRequest(endpoint, body, method = "GET", isFormData = fa
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            console.log("HTTP Status:", response.status);
+            console.log("Response Text:", await response.text());
+            return;
         }
 
         const data = await response.json();

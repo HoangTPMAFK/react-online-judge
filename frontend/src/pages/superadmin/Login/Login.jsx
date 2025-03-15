@@ -8,7 +8,7 @@ function Login() {
     const navigate = useNavigate();
     const [error, setError] = useState(""); // Lưu thông báo lỗi
 
-    const submitHandler = async (event) => {
+    const loginHandler = async (event) => {
         event.preventDefault();
         const valid = await authenticate({loginRequest});
         if (valid) {
@@ -23,7 +23,7 @@ function Login() {
             <div className='bg-white p-8 rounded-lg shadow-lg'>
                 <h1 className='text-2xl font-bold text-center'>Login</h1>
                 {error && <p className="text-red-500 text-xl font-semibold">{error}</p>} 
-                <form className='flex flex-col gap-4 mt-4' onSubmit={login}>
+                <form className='flex flex-col gap-4 mt-4' onSubmit={loginHandler}>
                     <input 
                         type='text' 
                         placeholder='Username' 
