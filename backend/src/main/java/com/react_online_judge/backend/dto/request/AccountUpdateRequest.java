@@ -1,5 +1,7 @@
 package com.react_online_judge.backend.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.react_online_judge.backend.validation.PasswordConfirm;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,9 +11,11 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,10 +40,12 @@ public class AccountUpdateRequest {
     @NotBlank(message = "Last name cannot be blank")
     String lname;
 
-    Set<String> roles;
-    String avatar;
     @Past(message = "Date of birth must be in the past")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     Date dob;
+
+    String avatar = "avatar.png";
 
     String gender;
 }
+

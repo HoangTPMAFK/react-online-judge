@@ -44,9 +44,13 @@ async function authenticate({ loginRequest }) {
 
         const account = response.data.account;
         const token = response.data.token;
-        const currentRole = window.location.pathname.split("/")[1]?.toUpperCase() || "";
+        let currentRole = window.location.pathname.split("/")[1]?.toUpperCase() || "";
+        currentRole = (currentRole == "superadmin" ? "super_admin" : currentRole)
 
-        if (!(account.roles.includes(currentRole) || (account.roles.includes("USER") && currentRole === "LOGIN"))) {
+        if (!(account.roles.includes(currentRole.toUpperCase()) || (account.roles.includes("USER") && currentRole === "LOGIN"))) {
+            alert("You aren't a normal user")
+            alert(JSON.stringify(account.roles))
+            alert((currentRole == "superadmin" ? "super_admin" : currentRole))
             return false;
         }
 
@@ -77,6 +81,7 @@ async function introspect(role, ignore = false) {
         if (!ignore) logout(role);
     } else {
         const decodedToken = jwtDecode(getCookie("token"));
+        console.log(JSON.stringify(decodedToken.iss))
         if (!decodedToken.roles.map(r => r.toUpperCase()).includes(role.toUpperCase())) {
             logout(role);
         }

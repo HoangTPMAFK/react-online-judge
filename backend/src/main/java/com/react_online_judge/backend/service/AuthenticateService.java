@@ -54,6 +54,7 @@ public class AuthenticateService {
             return AuthenticateResponse.builder()
                     .isAuthenticated(true)
                     .token(generateToken(user))
+                    .account(userMapper.toUserResponse(user))
                     .build();
         }
     }
@@ -71,7 +72,6 @@ public class AuthenticateService {
             }
             return IntrospectReponse.builder()
                     .valid(true)
-                    .account(userMapper.toUserResponse(getUserFromToken(token)))
                     .build();
         } catch (Exception e) {
             try {
@@ -83,7 +83,6 @@ public class AuthenticateService {
                 String newToken = generateToken(user);
                 return IntrospectReponse.builder()
                         .valid(true)
-                        .account(userMapper.toUserResponse(user))
                         .token(newToken)
                         .build();
             } catch (Exception e1) {
@@ -101,7 +100,7 @@ public class AuthenticateService {
             Date expirationDate = signedToken.getJWTClaimsSet().getExpirationTime();
             invalidTokenRepository.save(InvalidToken.builder().id(jit).expirationTime(expirationDate).build());
         } catch (AppException e) {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
     }
     @PreAuthorize("denyAll()")
@@ -126,7 +125,7 @@ public class AuthenticateService {
             jwsObject.sign(new MACSigner(SECRET_KEY.getBytes()));
             return jwsObject.serialize();
         } catch (JOSEException e) {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
     }
     @PreAuthorize("denyAll()")
@@ -135,7 +134,7 @@ public class AuthenticateService {
         SignedJWT signedJWT = SignedJWT.parse(token.replace("Bearer ", ""));
         JWSVerifier verifier = new MACVerifier(SECRET_KEY.getBytes());
         if (!signedJWT.verify(verifier)) {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
         String username = signedJWT.getJWTClaimsSet().getSubject();
         User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -144,7 +143,7 @@ public class AuthenticateService {
     @PreAuthorize("denyAll()")
     public SignedJWT verifiedToken(String token, boolean isRefresh) throws ParseException, JOSEException {
         if (token == null || token.isEmpty()) {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
         JWSVerifier verifier = new MACVerifier(SECRET_KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token.replace("Bearer ", ""));
@@ -155,7 +154,7 @@ public class AuthenticateService {
         if (valid && expiration.after(new Date(Instant.now().toEpochMilli()))) {
             return signedJWT;
         } else {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
     }
     @PreAuthorize("denyAll()")

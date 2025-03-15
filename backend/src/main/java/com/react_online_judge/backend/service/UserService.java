@@ -21,7 +21,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
@@ -105,7 +111,7 @@ public class UserService {
         }
     }
     @PreAuthorize("hasAuthority('MODIFY_ACCOUNT')")
-    public UserResponse updateAccount(String token, AccountUpdateRequest request) {
+    public UserResponse updateAccount(String token, AccountUpdateRequest request, MultipartFile file) {
         try {
             log.info("Request: {}", request.toString());
             User user = authenticateService.getUserFromToken(token);
@@ -125,12 +131,23 @@ public class UserService {
                         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
                     }
                 }
+                if (file != null) {
+                    Path uploadPath = Paths.get("src/main/resources/statics/uploads/");
+                    if (!Files.exists(uploadPath)) {
+                        Files.createDirectories(uploadPath);
+                    }
+                    Path filePath = uploadPath.resolve(user.getUsername()+file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
+                    Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                    user.setAvatar(user.getUsername() + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
+                }
                 return userMapper.toUserResponse(userRepository.save(user));
             } else {
                 throw new AppException(ErrorCode.UNAUTHENTICATED);
             }
         } catch (ParseException | JOSEException e) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
+        } catch (IOException e) {
+            throw new AppException(ErrorCode.UPLOAD_FILE_FAILED);
         }
     }
     @PreAuthorize("hasAuthority('DELETE_ACCOUNT')")

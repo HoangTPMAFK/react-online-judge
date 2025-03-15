@@ -11,6 +11,7 @@ public enum ErrorCode {
     SUBMISSION_NOT_EXISTED(304, "Submission not existed", HttpStatus.NOT_FOUND),
     ROLE_NOT_EXISTED(305, "Role not existed", HttpStatus.NOT_FOUND),
     PERMISSION_NOT_EXISTED(306, "Permission not existed", HttpStatus.NOT_FOUND),
+    RESOURCE_NOT_FOUND(307, "Resource not found", HttpStatus.NOT_FOUND),
     USER_EXISTED(401, "User existed", HttpStatus.BAD_REQUEST),
     PROBLEM_EXISTED(402, "Problem existed", HttpStatus.BAD_REQUEST),
     CONTEST_EXISTED(403, "Contest existed", HttpStatus.BAD_REQUEST),
@@ -21,6 +22,8 @@ public enum ErrorCode {
     UNAUTHORIZED(201, "You don't have permission", HttpStatus.FORBIDDEN),
     UNAUTHENTICATED(202, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     WRONG_PASSWORD(203, "Wrong password", HttpStatus.BAD_REQUEST),
+    UPLOAD_FILE_FAILED(204, "Upload file failed", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST(205, "Invalid request", HttpStatus.BAD_REQUEST),
     UNCATEGORIZED(501, "Uncategorized exception", HttpStatus.INTERNAL_SERVER_ERROR),
     REQUEST_HEADER_MISSING(502, "Request header missing", HttpStatus.BAD_REQUEST),
     ;

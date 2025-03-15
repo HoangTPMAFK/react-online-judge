@@ -32,7 +32,7 @@ public class UserCreationRequest {
     String fname;
     String lname;
     Set<String> roles;
-    String avatar;
+    String avatar = "avatar.png";
     Date dob;
     String gender;
 }

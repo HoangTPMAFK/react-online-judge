@@ -41,6 +41,7 @@ public interface UserMapper {
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
 
     @Mapping(target = "roles", source = "roles", qualifiedByName = "mapStringsToRoles")
+    @Mapping(target = "avatar", ignore = true)
     void updateUser(@MappingTarget User user, AccountUpdateRequest request);
 }
 

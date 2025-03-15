@@ -19,6 +19,7 @@ const Admin = () => {
   const [token, setToken] = useState(null);
   const [auth, setAuth] = useState(null);
   const navigate = useNavigate(); // Thay thế window.location.href
+  const [account, setAccount] = useState(JSON.parse(xorEncryptDecrypt(atob(localStorage.getItem("account")), localStorage.getItem("loginTime")) || {}))
 
   useEffect(() => {
     let isMounted = true; // Biến kiểm tra component có còn mounted không
@@ -43,8 +44,9 @@ const Admin = () => {
       setToken(storedToken);
       setAuth(true);
       introspect("admin");
+      const accountData = JSON.parse(xorEncryptDecrypt(atob(localStorage.getItem("account")), localStorage.getItem("loginTime")) || {})
     };
-    
+
     checkAuth();
   
     return () => {
@@ -101,7 +103,7 @@ const Admin = () => {
               onClick={() => setIsDropdownOpen(!isDropdownOpen)} 
               className="relative z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none"
             >
-              <img src="/api/placeholder/400/400" alt="profile" />
+              <img src={account ? `http://localhost:8080/contest-programing/avatar.png` : `http://localhost:8080/contest-programing/${"avatar.png"}`} alt="profile" />
             </button>
 
             {isDropdownOpen && (

@@ -11,4 +11,5 @@ import lombok.experimental.FieldDefaults;
 public class AuthenticateResponse {
     String token;
     boolean isAuthenticated;
+    UserResponse account;
 }

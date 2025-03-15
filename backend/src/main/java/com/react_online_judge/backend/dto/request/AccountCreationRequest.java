@@ -1,7 +1,6 @@
 package com.react_online_judge.backend.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.react_online_judge.backend.validation.PasswordConfirm;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,8 +10,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -21,7 +18,11 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @PasswordConfirm
-public class AccountUpdateRequest {
+public class AccountCreationRequest {
+    @Size(min = 6, message = "Password must be at least 6 characters")
+    @NotBlank
+    String name;
+
     String password;
 
     @Size(min = 8, message = "Password must be at least 8 characters")
@@ -43,6 +44,8 @@ public class AccountUpdateRequest {
     @Past(message = "Date of birth must be in the past")
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     Date dob;
+
+    String avatar = "avatar.png";
 
     String gender;
 }
