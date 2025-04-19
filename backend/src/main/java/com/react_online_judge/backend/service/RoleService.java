@@ -54,4 +54,8 @@ public class RoleService {
         }
         return roleMapper.toRoleResponse(role);
     }
+    public void deleteRole(String name) {
+        Role role = roleRepository.findRoleByName(name).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED));
+        roleRepository.delete(role);
+    }
 }

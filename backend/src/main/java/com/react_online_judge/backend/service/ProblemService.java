@@ -11,6 +11,7 @@ import com.react_online_judge.backend.mapper.ProblemMapper;
 import com.react_online_judge.backend.repository.AnnouncementRepository;
 import com.react_online_judge.backend.repository.ProblemRepository;
 import com.react_online_judge.backend.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -150,6 +151,7 @@ public class ProblemService {
         }
     }
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('DELETE_PROBLEM')")
+    @Transactional
     public void deleteProblem(String token, Long id) {
         User user;
         try {
@@ -157,12 +159,22 @@ public class ProblemService {
         } catch (ParseException | JOSEException e) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
-        Problem problem = problemRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PROBLEM_NOT_EXISTED));
+
+        Problem problem = problemRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.PROBLEM_NOT_EXISTED));
+
         if (!problem.getAuthor().equals(user.getUsername())) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
-        problemRepository.deleteById(id);
+
+        // Xóa quan hệ với contest trước
+        for (Contest contest : problem.getContests()) {
+            contest.getProblems().remove(problem);
+        }
+
+        problemRepository.delete(problem);
     }
+
 
     public List<ProblemResponse> getProblemsByCreatorAndByTitle(String token, String name) {
         try {

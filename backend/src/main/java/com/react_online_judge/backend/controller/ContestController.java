@@ -58,7 +58,7 @@ public class ContestController {
                 .data(contestService.updateContest(token, contestId, request))
                 .build();
     }
-    @DeleteMapping("/{contestId}/")
+    @DeleteMapping("/{contestId}")
     public APIResponse<ContestResponse> deleteContest(@RequestHeader("Authorization") String token, @PathVariable Long contestId) {
         contestService.deleteContest(contestId);
         return APIResponse.<ContestResponse>builder()

@@ -6,10 +6,7 @@ import com.react_online_judge.backend.dto.request.ContestCreationRequest;
 import com.react_online_judge.backend.dto.request.ContestJoinRequest;
 import com.react_online_judge.backend.dto.request.ContestUpdateRequest;
 import com.react_online_judge.backend.dto.response.ContestResponse;
-import com.react_online_judge.backend.entity.Announcement;
-import com.react_online_judge.backend.entity.Contest;
-import com.react_online_judge.backend.entity.ContestParticipator;
-import com.react_online_judge.backend.entity.User;
+import com.react_online_judge.backend.entity.*;
 import com.react_online_judge.backend.exception.AppException;
 import com.react_online_judge.backend.exception.ErrorCode;
 import com.react_online_judge.backend.mapper.ContestMapper;
@@ -124,18 +121,22 @@ public class ContestService {
 
     }
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('DELETE_CONTEST')")
+    @Transactional
     public void deleteContest(Long id) {
         Contest contest = contestRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.CONTEST_NOT_EXISTED));
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        try {
-            User user = authenticateService.getUserFromToken(username);
-            if (contest.getCreatorId() != user.getId()) {
-                throw new AppException(ErrorCode.UNAUTHORIZED);
-            }
-            contestRepository.deleteById(id);
-        } catch (ParseException | JOSEException e) {
-            throw new RuntimeException(e);
+        log.info("username: {}", username);
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        if (contest.getCreatorId() != user.getId()) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
         }
+
+        // Xóa quan hệ với problem trước
+        for (Problem problem : contest.getProblems()) {
+            problem.getContests().remove(contest);
+        }
+        contest.getProblems().clear();
+        contestRepository.delete(contest);
     }
     @PreAuthorize("hasRole('USER')")
     public ContestResponse joinContest(Long contestId, String token, ContestJoinRequest request) {
